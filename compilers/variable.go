@@ -1,28 +1,33 @@
 package compilers
 
 import (
-	"github.com/captaincrazybro/jef/variable"
+	"github.com/captaincrazybro/jef/domain"
 	lu "github.com/captaincrazybro/literalutil"
 	c "github.com/captaincrazybro/literalutil/console"
 )
 
-// Variable structure to compile variables
-type Variable struct {}
+// variable structure to compile variables
+type variable struct {
+	jef domain.Jef
+}
 
-func (v Variable) GetName() string {
+func (v variable) GetName() string {
 	return variableName
 }
 
 // TODO: make variable check more specific
-func (v Variable) Check(s lu.String) bool {
+func (v variable) Check(s lu.String) bool {
 	return s.Contains("=") && s.Split("=").Len() >= 2
 }
 
-func (v Variable) Run(s lu.String, line *int) error {
+func (v variable) Run(s lu.String, line *int) error {
 	varName := s.Split("=")[0].ReplaceAll(" ", "")
 	value := s.Split("=")[1].TrimPrefix(" ")
-	// TODO: variable name validation
-	variable.RegisterVariable(varName.Tos(), value)
+
+	err := v.jef.GetVariableManager().RegisterVariable(varName.Tos(), "string", value)
+	if err != nil {
+		return err
+	}
 
 	c.Plnf("%s and %v", varName, value)
 

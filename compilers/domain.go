@@ -1,5 +1,5 @@
 package compilers
 
 const (
-	variableName string = "Variable"
+	variableName string = "variables"
 )
