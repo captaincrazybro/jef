@@ -26,7 +26,7 @@ type Compiler interface {
 
 // Variable interface to store a variable
 type Variable interface {
-	GetType() string
+	GetType() Datatype
 	GetValue() interface{}
 	GetName() string
 }
@@ -36,12 +36,14 @@ type Function interface {
 	GetName() string
 	GetType() string
 	GetExec() func(Jef)
+	GetParams() map[string]Datatype
 }
 
-// Datatype interface to store a datatype
+// Datatype interface to store a Datatype
 type Datatype interface {
 	GetName() string
-	Check()
+	Check(string) bool
+	GetValue(string) (interface{}, error)
 }
 
 // CompilerManager interface to store compilerManager instance
@@ -52,13 +54,13 @@ type CompilerManager interface {
 
 // VariableManager interface to store instance of variableManager
 type VariableManager interface {
-	RegisterVariable(string, string, interface{}) error
+	RegisterVariable(string, Datatype, interface{}) error
 	GetVariable(string) Variable
 }
 
 // FunctionManager interface to store instance of functionManager
 type FunctionManager interface {
-	RegisterFunction(string, string, func(Jef)) error
+	RegisterFunction(string, string, map[string]Datatype, func(Jef)) error
 	GetFunction(string) Function
 }
 

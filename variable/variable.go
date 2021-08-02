@@ -1,14 +1,16 @@
 package variable
 
+import "github.com/captaincrazybro/jef/domain"
+
 // variable structure to store a Variable
 type variable struct {
-	variableType string
+	variableType domain.Datatype
 	value interface{}
 	name string
 }
 
 // createVariable creates a variable structure
-func createVariable(name string, varType string, value interface{}) variable {
+func createVariable(name string, varType domain.Datatype, value interface{}) variable {
 	return variable{
 		variableType: varType,
 		value:        value,
@@ -17,7 +19,7 @@ func createVariable(name string, varType string, value interface{}) variable {
 }
 
 // GetType gets the variable type
-func (v variable) GetType() string {
+func (v variable) GetType() domain.Datatype {
 	return v.variableType
 }
 

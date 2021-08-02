@@ -6,6 +6,7 @@ type function struct {
 	name string
 	funcType string
 	exec func(domain.Jef)
+	params map[string]domain.Datatype
 }
 
 func (f function) GetName() string {
@@ -18,4 +19,8 @@ func (f function) GetType() string {
 
 func (f function) GetExec() func(domain.Jef) {
 	return f.exec
+}
+
+func (f function) GetParams() map[string]domain.Datatype {
+	return f.params
 }

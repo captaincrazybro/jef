@@ -29,7 +29,19 @@ func New(code string) domain.Jef {
 
 	registerManagers(&j)
 
-	return j
+	return &j
+}
+
+// NewFromExisting creates a new instance of Jef based on an existing
+func NewFromExisting(j domain.Jef, code string) domain.Jef {
+	newJef := jef {
+		code: lu.String(code),
+		compilers: j.GetCompilerManager(),
+		functions: j.GetFunctionManager(),
+		variables: j.GetVariableManager(),
+	}
+
+	return &newJef
 }
 
 // registerManagers registers all the managers
@@ -40,18 +52,18 @@ func registerManagers(j *jef) {
 }
 
 // Moto prints the moto for the Jef programming language
-func (_ jef) Moto() {
+func (_ *jef) Moto() {
 	c.Pln("My name is Jeff!")
 }
 
 // Check checks the code for errors and pre registers functions
 // TODO: create checking stuff
-func (j jef) Check() {
+func (j *jef) Check() {
 	//code := lu.String(s)
 }
 
 // Run runs the code
-func (j jef) Run() {
+func (j *jef) Run() {
 	code := j.code
 	lines := code.Split("\n")
 
@@ -64,15 +76,15 @@ func (j jef) Run() {
 	}
 }
 
-func (j jef) GetCompilerManager() domain.CompilerManager {
+func (j *jef) GetCompilerManager() domain.CompilerManager {
 	return j.compilers
 }
 
-func (j jef) GetVariableManager() domain.VariableManager {
+func (j *jef) GetVariableManager() domain.VariableManager {
 	return j.variables
 }
 
-func (j jef) GetFunctionManager() domain.FunctionManager {
+func (j *jef) GetFunctionManager() domain.FunctionManager {
 	return j.functions
 }
 
