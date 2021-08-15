@@ -24,12 +24,15 @@ func (dm *datatypeManager) AddDatatype(d domain.Datatype) {
 	dm.datatypes = append(dm.datatypes, d)
 }
 
-// FindDatatype finds a datatype with a specific code string
+// FindDatatype finds a datatype with the a raw code string
 func (dm *datatypeManager) FindDatatype(s string) (domain.Datatype, error) {
 	for _, v := range dm.datatypes {
 		if v.Check(s) {
 			_, err := v.GetValue(s)
-			return v, err
+			if err != nil {
+				return nil, err
+			}
+			return v, nil
 		}
 	}
 	return nil, nil
