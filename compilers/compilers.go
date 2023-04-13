@@ -21,6 +21,7 @@ func New(j domain.Jef) domain.CompilerManager {
 // Init registers all compilerManager
 func (cz *compilerManager) registerCompilers(j domain.Jef) {
 	cz.AddCompiler(variable{j})
+	cz.AddCompiler(functioncalls{j})
 }
 
 // AddCompiler adds a compilers to the compilers list
@@ -46,7 +47,7 @@ func (cz compilerManager) CompileLine(s lu.String, line *int) error {
 
 	// checks if a compilers exists for this line
 	if compiler == nil {
-		return fmt.Errorf("unexpected line at line number %d, %q", line, s)
+		return fmt.Errorf("unexpected line at line number %d, %q", *line+1, s)
 	}
 
 	return compiler.Run(s, line)

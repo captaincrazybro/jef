@@ -2,6 +2,7 @@ package jef
 
 import (
 	"github.com/captaincrazybro/jef/compilers"
+	"github.com/captaincrazybro/jef/datatypes"
 	"github.com/captaincrazybro/jef/domain"
 	"github.com/captaincrazybro/jef/functions"
 	"github.com/captaincrazybro/jef/variable"
@@ -15,15 +16,15 @@ func init() {
 
 type jef struct {
 	code      lu.String
-	//managers managers.Managers
 	compilers domain.CompilerManager
 	variables domain.VariableManager
 	functions domain.FunctionManager
+	datatypes domain.DatatypeManager
 }
 
 // New creates a new instance of Jef
 func New(code string) domain.Jef {
-	j := jef {
+	j := jef{
 		code: lu.String(code),
 	}
 
@@ -32,22 +33,11 @@ func New(code string) domain.Jef {
 	return &j
 }
 
-// NewFromExisting creates a new instance of Jef based on an existing
-func NewFromExisting(j domain.Jef, code string) domain.Jef {
-	newJef := jef {
-		code: lu.String(code),
-		compilers: j.GetCompilerManager(),
-		functions: j.GetFunctionManager(),
-		variables: j.GetVariableManager(),
-	}
-
-	return &newJef
-}
-
 // registerManagers registers all the managers
 func registerManagers(j *jef) {
 	j.compilers = compilers.New(j)
 	j.variables = variable.New(j)
+	j.datatypes = datatypes.New(j)
 	j.functions = functions.New(j)
 }
 
@@ -67,11 +57,11 @@ func (j *jef) Run() {
 	code := j.code
 	lines := code.Split("\n")
 
-	for i := 0; i < lines.Len(); i ++ {
+	for i := 0; i < lines.Len(); i++ {
 		lineValue := lines[i]
 		err := j.GetCompilerManager().CompileLine(lineValue, &i)
 		if err != nil {
-			c.Fln(err)
+			c.Flnf("%s - line: %d", err, i+1)
 		}
 	}
 }
@@ -88,7 +78,32 @@ func (j *jef) GetFunctionManager() domain.FunctionManager {
 	return j.functions
 }
 
-// GetManagers gets the managers
-//func (j jef) GetManagers() managers.Managers {
-//	return j.managers
-//}
+func (j *jef) GetDatatypeManager() domain.DatatypeManager {
+	return j.datatypes
+}
+
+// New creates a new instance of Jef based on an existing
+func (j *jef) New(code string) domain.Jef {
+	newJef := jef{
+		code:      lu.String(code),
+		compilers: j.GetCompilerManager(),
+		functions: j.GetFunctionManager(),
+		variables: j.GetVariableManager(),
+		datatypes: j.GetDatatypeManager(),
+	}
+
+	return &newJef
+}
+
+// NewCodeless creates a new instance of Jef based on an existing, without code
+// This is only used for system functions that do not need to run code
+func (j *jef) NewCodeless() domain.Jef {
+	newJef := jef{
+		compilers: j.GetCompilerManager(),
+		functions: j.GetFunctionManager(),
+		variables: j.GetVariableManager(),
+		datatypes: j.GetDatatypeManager(),
+	}
+
+	return &newJef
+}

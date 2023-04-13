@@ -1,5 +1,6 @@
 package compilers
 
 const (
-	variableName string = "variables"
+	variableName     string = "variables"
+	functionCallName string = "functionCalls"
 )

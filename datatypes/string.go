@@ -3,34 +3,39 @@ package datatypes
 import (
 	"fmt"
 	lu "github.com/captaincrazybro/literalutil"
+	"regexp"
+	"strings"
 )
 
 type String struct {
-
 }
 
 func (sD String) GetName() string {
 	return stringDatatypeName
 }
 
-func (sD String) Check(s string) bool {
-	S := lu.String(s)
-
-	return S.Contains(`"`) && S.HasPrefix(`"`) && S.HasSuffix(`"`)
+func (sD String) GetVarName() string {
+	return stringDatatypeName
 }
 
-func (sD String) GetValue(s string) (interface{}, error) {
-	S := lu.String(s)
+func (sD String) Check(s lu.String) bool {
+	r, _ := regexp.Compile("^\".*\"$")
+	return r.MatchString(s.Tos())
+}
 
-	quoteCount := 0
-	for i, v := range S {
-		if string(v) == `"` && string(S[i - 1]) != `\` {
-			quoteCount++
+func (sD String) GetValue(s lu.String) (interface{}, error) {
+	r, _ := regexp.Compile("^\"(.*)\"$")
+	str := r.FindStringSubmatch(s.Tos())[1]
+
+	// Accounts for backslash plus a quote
+	for i, s := range str {
+		if s == '"' {
+			if i == 0 || str[i-1] == '\\' {
+				return nil, fmt.Errorf("invalid string! additional quote detected in string literal")
+			}
 		}
 	}
-	if quoteCount != 2 {
-		return nil, fmt.Errorf("extra `\"` found in provided datatype string; did you mean to put a \"\\\" before the quote?")
-	}
+	strings.ReplaceAll(str, "\\\"", "\"")
 
-	return S.ReplaceAll(`"`, ""), nil
+	return str, nil
 }

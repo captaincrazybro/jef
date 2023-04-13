@@ -2,8 +2,8 @@ package compilers
 
 import (
 	"github.com/captaincrazybro/jef/domain"
+	"github.com/captaincrazybro/jef/util"
 	lu "github.com/captaincrazybro/literalutil"
-	c "github.com/captaincrazybro/literalutil/console"
 )
 
 // variable structure to compile variables
@@ -22,14 +22,16 @@ func (v variable) Check(s lu.String) bool {
 
 func (v variable) Run(s lu.String, line *int) error {
 	varName := s.Split("=")[0].ReplaceAll(" ", "")
-	value := s.Split("=")[1].TrimPrefix(" ")
+	value := s.Split("=")[1]
+	value = util.TrimWhitespaces(value)
 
-	err := v.jef.GetVariableManager().RegisterVariable(varName.Tos(), "string", value)
+	// Finds the datatype
+	dataType, _ := v.jef.GetDatatypeManager().FindDatatype(s)
+
+	err := v.jef.GetVariableManager().RegisterVariable(varName.Tos(), dataType, value)
 	if err != nil {
 		return err
 	}
-
-	c.Plnf("%s and %v", varName, value)
 
 	return nil
 }

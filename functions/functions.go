@@ -2,14 +2,13 @@ package functions
 
 import (
 	"fmt"
-	"github.com/captaincrazybro/jef"
 	"github.com/captaincrazybro/jef/domain"
 )
 
 // functionManager structure to store functions
 type functionManager struct {
 	functions []function
-	jef domain.Jef
+	jef       domain.Jef
 }
 
 // New creates a new instance of functionManager
@@ -20,16 +19,16 @@ func New(j domain.Jef) domain.FunctionManager {
 }
 
 // RegisterFunction registers a new function
-func (fm *functionManager) RegisterFunction(name string, funcType string, params map[string]domain.Datatype, exec func(jef domain.Jef)) error {
+func (fm *functionManager) RegisterFunction(name string, funcType domain.Datatype, params []domain.Parameter, exec func(jef domain.Jef)) error {
 	if fm.GetFunction(name) != nil {
 		return fmt.Errorf("bad function declaration, function %q has already been declared", name)
 	}
 
 	function := function{
-		name:     name,
-		funcType: funcType,
-		exec:     exec,
-		params: params,
+		name:       name,
+		returnType: funcType,
+		exec:       exec,
+		params:     params,
 	}
 	fm.functions = append(fm.functions, function)
 	return nil
@@ -46,22 +45,21 @@ func (fm *functionManager) GetFunction(name string) domain.Function {
 	return nil
 }
 
-// PrepJef adds function parameters to a n instance of jef
-func (fm *functionManager) PrepJef(code string, varVals []string, f domain.Function) (domain.Jef, error) {
-	if len(varVals) != len(f.GetParams()) {
-		return nil, fmt.Errorf("incorrect number of parameters, expected %d got %d", len(f.GetParams()), len(varVals))
+// validateParameters validates the parameters with given parameter values
+func validateParameters(f domain.Function, values []interface{}, givenTypes []domain.Datatype) error {
+	if len(values) != len(givenTypes) {
+		return fmt.Errorf("an internal error has occured! length of the values does not equal the length of the given data types")
+	} else if len(values) != len(f.GetParams()) {
+		return fmt.Errorf("invalid parameters passed to function %s. number of parameters of parameters passed (%d) does not equal number of parameters of the function (%d)", f.GetName(), len(values), len(f.GetParams()))
 	}
 
-	j := jef.NewFromExisting(fm.jef, code)
-
-	i := 0
-	for k, v := range f.GetParams() {
-		err := j.GetVariableManager().RegisterVariable(k, v, varVals[i])
-		if err != nil {
-			return nil, err
+	// Checks the parameters, making sure they are the right datatypes
+	for i, param := range f.GetParams() {
+		givenType := givenTypes[i]
+		if param.GetType() != givenType {
+			return fmt.Errorf("invalid parameters passed to function %s. type of parameter %d (%s) does not equal the expected parameter type (%s)", f.GetName(), i+1, givenType.GetName(), param.GetType().GetName())
 		}
-		i++
 	}
 
-	return j, nil
+	return nil
 }

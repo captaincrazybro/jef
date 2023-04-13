@@ -1,5 +1,8 @@
 package datatypes
 
 const (
-	stringDatatypeName = "string"
+	stringDatatypeName   = "string"
+	integerDatatypeName  = "int"
+	doubleDatatypeName   = "double"
+	variableDatatypeName = "variable"
 )

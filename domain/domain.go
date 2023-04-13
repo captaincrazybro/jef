@@ -15,6 +15,9 @@ type Jef interface {
 	GetCompilerManager() CompilerManager
 	GetVariableManager() VariableManager
 	GetFunctionManager() FunctionManager
+	GetDatatypeManager() DatatypeManager
+	New(code string) Jef
+	NewCodeless() Jef
 }
 
 // Compiler compilers interface
@@ -34,16 +37,31 @@ type Variable interface {
 // Function interface to store a function
 type Function interface {
 	GetName() string
-	GetType() string
+	GetReturnType() Datatype
 	GetExec() func(Jef)
-	GetParams() map[string]Datatype
+	GetParams() []Parameter
+	RunExec([]interface{}, []Datatype, Jef) error
+}
+
+// Parameter interface to store a parameter
+type Parameter interface {
+	GetName() string
+	GetType() Datatype
 }
 
 // Datatype interface to store a Datatype
 type Datatype interface {
 	GetName() string
-	Check(string) bool
-	GetValue(string) (interface{}, error)
+	GetVarName() string
+	Check(lu.String) bool
+	GetValue(lu.String) (interface{}, error)
+}
+
+// DataValue interface to store a data value
+type DataValue interface {
+	GetType() Datatype
+	GetTypeName() string
+	GetValue() interface{}
 }
 
 // CompilerManager interface to store compilerManager instance
@@ -56,16 +74,18 @@ type CompilerManager interface {
 type VariableManager interface {
 	RegisterVariable(string, Datatype, interface{}) error
 	GetVariable(string) Variable
+	GetVariables() []Variable
 }
 
 // FunctionManager interface to store instance of functionManager
 type FunctionManager interface {
-	RegisterFunction(string, string, map[string]Datatype, func(Jef)) error
+	RegisterFunction(string, Datatype, []Parameter, func(Jef)) error
 	GetFunction(string) Function
 }
 
 // DatatypeManager interface to store instance of datatypeManager
 type DatatypeManager interface {
 	AddDatatype(Datatype)
-	FindDatatype(string) (Datatype, error)
+	FindDatatype(lu.String) (DataValue, error)
+	GetDatatype(string) Datatype
 }
