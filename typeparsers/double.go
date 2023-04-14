@@ -1,4 +1,4 @@
-package parsers
+package typeparsers
 
 import (
 	"github.com/captaincrazybro/jef/domain"
@@ -23,7 +23,7 @@ func (dD Double) Check(s lu.String) bool {
 func (dD Double) GetValue(s lu.String) (domain.DataValue, error) {
 	r, _ := regexp.Compile("^-?\\d*\\.?\\d*$")
 	parsedString := r.FindString(s.Tos())
-	value, err := strconv.Atoi(parsedString)
+	value, err := strconv.ParseFloat(parsedString, 32)
 	if err != nil {
 		return nil, err
 	}

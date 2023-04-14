@@ -1,4 +1,4 @@
-package parsers
+package typeparsers
 
 import "github.com/captaincrazybro/jef/domain"
 

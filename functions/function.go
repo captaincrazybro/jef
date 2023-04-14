@@ -27,7 +27,7 @@ func (f function) GetParams() []domain.Parameter {
 
 func (f function) RunExec(values []domain.DataValue, j domain.Jef) error {
 	// Validates the function values
-	err := validateParameters(f, values)
+	err := validateParameters(f, values, j)
 	if err != nil {
 		return err
 	}
@@ -38,7 +38,7 @@ func (f function) RunExec(values []domain.DataValue, j domain.Jef) error {
 	for i, val := range values {
 		dType := val.GetType()
 		param := f.GetParams()[i]
-		err := newJ.GetVariableManager().RegisterVariable(param.GetName(), dType, val)
+		err := newJ.GetVariableManager().RegisterVariable(param.GetName(), dType, val.GetValue())
 		if err != nil {
 			return err
 		}

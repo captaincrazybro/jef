@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-// variable structure to compile variables
+// variableAssignment structure to compile variables
 type functioncalls struct {
 	jef domain.Jef
 }

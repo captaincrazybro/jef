@@ -19,7 +19,10 @@ func New(j domain.Jef) domain.DatatypeManager {
 
 // registerDataTypes registers all the dataTypes
 func (dm *datatypeManager) registerDataTypes() {
-
+	dm.AddDataType(dataType{name: "string"})
+	dm.AddDataType(dataType{name: "int"})
+	dm.AddDataType(dataType{name: "double"})
+	dm.AddDataType(dataType{name: "any"})
 }
 
 // AddDataType registers a datatype to the list of dataTypes in side the datatype manager

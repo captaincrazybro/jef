@@ -5,7 +5,7 @@ import (
 	"github.com/captaincrazybro/jef/datatypes"
 	"github.com/captaincrazybro/jef/domain"
 	"github.com/captaincrazybro/jef/functions"
-	"github.com/captaincrazybro/jef/parsers"
+	"github.com/captaincrazybro/jef/typeparsers"
 	"github.com/captaincrazybro/jef/variable"
 	lu "github.com/captaincrazybro/literalutil"
 	c "github.com/captaincrazybro/literalutil/console"
@@ -20,8 +20,8 @@ type jef struct {
 	compilers domain.CompilerManager
 	variables domain.VariableManager
 	functions domain.FunctionManager
-	datatypes domain.DatatypeManager
-	parsers domain.ParserManager
+	dataTypes domain.DatatypeManager
+	parsers   domain.ParserManager
 }
 
 // New creates a new instance of Jef
@@ -39,8 +39,8 @@ func New(code string) domain.Jef {
 func registerManagers(j *jef) {
 	j.compilers = compilers.New(j)
 	j.variables = variable.New(j)
-	j.datatypes = datatypes.New(j)
-	j.parsers = parsers.New(j)
+	j.dataTypes = datatypes.New(j)
+	j.parsers = typeparsers.New(j)
 	j.functions = functions.New(j)
 }
 
@@ -82,7 +82,7 @@ func (j *jef) GetFunctionManager() domain.FunctionManager {
 }
 
 func (j *jef) GetDatatypeManager() domain.DatatypeManager {
-	return j.datatypes
+	return j.dataTypes
 }
 
 func (j *jef) GetParserManager() domain.ParserManager {
@@ -96,7 +96,7 @@ func (j *jef) New(code string) domain.Jef {
 		compilers: j.GetCompilerManager(),
 		functions: j.GetFunctionManager(),
 		variables: j.GetVariableManager(),
-		datatypes: j.GetDatatypeManager(),
+		dataTypes: j.GetDatatypeManager(),
 	}
 
 	return &newJef
@@ -109,7 +109,7 @@ func (j *jef) NewCodeless() domain.Jef {
 		compilers: j.GetCompilerManager(),
 		functions: j.GetFunctionManager(),
 		variables: j.GetVariableManager(),
-		datatypes: j.GetDatatypeManager(),
+		dataTypes: j.GetDatatypeManager(),
 	}
 
 	return &newJef

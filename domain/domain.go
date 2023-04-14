@@ -60,7 +60,7 @@ type TypeParser interface {
 // DataType interface to store a datatype
 type DataType interface {
 	GetName() string
-	// TODO: Implement a method to get relevant parsers for the given datatype
+	// TODO: Implement a method to get relevant typeparsers for the given datatype
 }
 
 // DataValue interface to store a data value

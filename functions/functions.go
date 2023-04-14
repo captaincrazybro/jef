@@ -46,17 +46,15 @@ func (fm *functionManager) GetFunction(name string) domain.Function {
 }
 
 // validateParameters validates the parameters with given parameter values
-func validateParameters(f domain.Function, values []domain.DataValue) error {
-	if len(values) != len(values) {
-		return fmt.Errorf("an internal error has occured! length of the values does not equal the length of the given data types")
-	} else if len(values) != len(f.GetParams()) {
+func validateParameters(f domain.Function, values []domain.DataValue, j domain.Jef) error {
+	if len(values) != len(f.GetParams()) {
 		return fmt.Errorf("invalid parameters passed to function %s. number of parameters of parameters passed (%d) does not equal number of parameters of the function (%d)", f.GetName(), len(values), len(f.GetParams()))
 	}
 
 	// Checks the parameters, making sure they are the right datatypes
 	for i, param := range f.GetParams() {
 		givenType := values[i].GetType()
-		if param.GetType() != givenType {
+		if param.GetType() != j.GetDatatypeManager().GetDatatype("any") && param.GetType() != givenType {
 			return fmt.Errorf("invalid parameters passed to function %s. type of parameter %d (%s) does not equal the expected parameter type (%s)", f.GetName(), i+1, givenType.GetName(), param.GetType().GetName())
 		}
 	}

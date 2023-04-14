@@ -1,9 +1,9 @@
 package datatypes
 
-type datatype struct {
+type dataType struct {
 	name string
 }
 
-func (dt *datatype) GetName() string {
+func (dt dataType) GetName() string {
 	return dt.name
 }

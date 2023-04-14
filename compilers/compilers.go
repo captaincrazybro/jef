@@ -3,6 +3,7 @@ package compilers
 import (
 	"fmt"
 	"github.com/captaincrazybro/jef/domain"
+	"github.com/captaincrazybro/jef/util"
 	lu "github.com/captaincrazybro/literalutil"
 )
 
@@ -20,7 +21,7 @@ func New(j domain.Jef) domain.CompilerManager {
 
 // Init registers all compilerManager
 func (cz *compilerManager) registerCompilers(j domain.Jef) {
-	cz.AddCompiler(variable{j})
+	cz.AddCompiler(variableAssignment{j})
 	cz.AddCompiler(functioncalls{j})
 }
 
@@ -31,8 +32,15 @@ func (cz *compilerManager) AddCompiler(c domain.Compiler) {
 
 // CompileLine finds the appropriate compilers and runs it
 func (cz compilerManager) CompileLine(s lu.String, line *int) error {
+	// Trims the whitespaces around
+	s = util.TrimWhitespaces(s)
 	// comment checker
 	if s.ReplaceAll(" ", "").HasPrefix("//") {
+		return nil
+	}
+
+	// Checks if empty line
+	if s == "" {
 		return nil
 	}
 

@@ -1,4 +1,4 @@
-package parsers
+package typeparsers
 
 import (
 	"fmt"
@@ -17,12 +17,20 @@ func (sD String) GetType() domain.DataType {
 }
 
 func (sD String) Check(s lu.String) bool {
-	r, _ := regexp.Compile("^\".*\"$")
+	r, _ := regexp.Compile("^\".*$")
 	return r.MatchString(s.Tos())
 }
 
 func (sD String) GetValue(s lu.String) (domain.DataValue, error) {
 	r, _ := regexp.Compile("^\"(.*)\"$")
+	if !r.MatchString(s.Tos()) {
+		if s.Count("\"") == 1 {
+			return nil, fmt.Errorf("invalid string! missing a closing quote")
+		} else {
+			return nil, fmt.Errorf("invalid string! extra code outside of closing quote")
+		}
+	}
+
 	str := r.FindStringSubmatch(s.Tos())[1]
 
 	// Accounts for backslash plus a quote
