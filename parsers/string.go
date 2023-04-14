@@ -21,7 +21,7 @@ func (sD String) Check(s lu.String) bool {
 	return r.MatchString(s.Tos())
 }
 
-func (sD String) GetValue(s lu.String) (interface{}, error) {
+func (sD String) GetValue(s lu.String) (domain.DataValue, error) {
 	r, _ := regexp.Compile("^\"(.*)\"$")
 	str := r.FindStringSubmatch(s.Tos())[1]
 
@@ -35,5 +35,5 @@ func (sD String) GetValue(s lu.String) (interface{}, error) {
 	}
 	strings.ReplaceAll(str, "\\\"", "\"")
 
-	return str, nil
+	return dataValue{value: str, typeStruct: sD.GetType()}, nil
 }

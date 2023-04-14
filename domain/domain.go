@@ -30,7 +30,7 @@ type Compiler interface {
 
 // Variable interface to store a variable
 type Variable interface {
-	GetType() TypeParser
+	GetType() DataType
 	GetValue() interface{}
 	GetName() string
 }
@@ -41,20 +41,20 @@ type Function interface {
 	GetReturnType() TypeParser
 	GetExec() func(Jef)
 	GetParams() []Parameter
-	RunExec([]interface{}, []TypeParser, Jef) error
+	RunExec([]DataValue, Jef) error
 }
 
 // Parameter interface to store a parameter
 type Parameter interface {
 	GetName() string
-	GetType() TypeParser
+	GetType() DataType
 }
 
 // TypeParser interface to store a TypeParser
 type TypeParser interface {
 	GetType() DataType
 	Check(lu.String) bool
-	GetValue(lu.String) (interface{}, error)
+	GetValue(lu.String) (DataValue, error)
 }
 
 // DataType interface to store a datatype
@@ -77,7 +77,7 @@ type CompilerManager interface {
 
 // VariableManager interface to store instance of variableManager
 type VariableManager interface {
-	RegisterVariable(string, TypeParser, interface{}) error
+	RegisterVariable(string, DataType, interface{}) error
 	GetVariable(string) Variable
 	GetVariables() []Variable
 }

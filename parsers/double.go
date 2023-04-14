@@ -20,8 +20,13 @@ func (dD Double) Check(s lu.String) bool {
 	return r.MatchString(s.Tos())
 }
 
-func (dD Double) GetValue(s lu.String) (interface{}, error) {
+func (dD Double) GetValue(s lu.String) (domain.DataValue, error) {
 	r, _ := regexp.Compile("^-?\\d*\\.?\\d*$")
 	parsedString := r.FindString(s.Tos())
-	return strconv.Atoi(parsedString)
+	value, err := strconv.Atoi(parsedString)
+	if err != nil {
+		return nil, err
+	}
+
+	return dataValue{typeStruct: dD.GetType(), value: value}, nil
 }

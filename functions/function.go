@@ -25,9 +25,9 @@ func (f function) GetParams() []domain.Parameter {
 	return f.params
 }
 
-func (f function) RunExec(values []interface{}, types []domain.TypeParser, j domain.Jef) error {
+func (f function) RunExec(values []domain.DataValue, j domain.Jef) error {
 	// Validates the function values
-	err := validateParameters(f, values, types)
+	err := validateParameters(f, values)
 	if err != nil {
 		return err
 	}
@@ -36,7 +36,7 @@ func (f function) RunExec(values []interface{}, types []domain.TypeParser, j dom
 	newJ := j.NewCodeless()
 	// Adds the give parameters as variables
 	for i, val := range values {
-		dType := types[i]
+		dType := val.GetType()
 		param := f.GetParams()[i]
 		err := newJ.GetVariableManager().RegisterVariable(param.GetName(), dType, val)
 		if err != nil {

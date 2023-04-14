@@ -2,7 +2,6 @@ package compilers
 
 import (
 	"github.com/captaincrazybro/jef/domain"
-	"github.com/captaincrazybro/jef/util"
 	lu "github.com/captaincrazybro/literalutil"
 )
 
@@ -23,12 +22,11 @@ func (v variable) Check(s lu.String) bool {
 func (v variable) Run(s lu.String, line *int) error {
 	varName := s.Split("=")[0].ReplaceAll(" ", "")
 	value := s.Split("=")[1]
-	value = util.TrimWhitespaces(value)
 
 	// Finds the datatype
-	dataType, _ := v.jef.GetDatatypeManager().FindDatatype(s)
+	parser, _ := v.jef.GetParserManager().ParseCode(value)
 
-	err := v.jef.GetVariableManager().RegisterVariable(varName.Tos(), dataType, value)
+	err := v.jef.GetVariableManager().RegisterVariable(varName.Tos(), parser.GetType(), parser.GetValue())
 	if err != nil {
 		return err
 	}

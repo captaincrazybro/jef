@@ -20,12 +20,12 @@ func (vD Variable) Check(s lu.String) bool {
 	return r.MatchString(s.Tos())
 }
 
-func (vD Variable) GetValue(s lu.String) (interface{}, error) {
+func (vD Variable) GetValue(s lu.String) (domain.DataValue, error) {
 	// Trys to find the variable
 	v := vD.jef.GetVariableManager().GetVariable(s.Tos())
 	if v == nil {
 		return nil, fmt.Errorf("invalid variable called! variable does not exist")
 	}
 
-	return v.GetValue(), nil
+	return dataValue{value: v.GetValue(), typeStruct: v.GetType()}, nil
 }

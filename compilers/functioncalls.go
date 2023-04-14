@@ -38,26 +38,19 @@ func (v functioncalls) Run(s lu.String, line *int) error {
 	// Parses parameters
 	rawParams := subz[2]
 	params := strings.Split(rawParams, ",")
-	var paramTypes []domain.TypeParser
-	var paramValues []interface{}
+	var paramValues []domain.DataValue
 	for _, param := range params {
 		// Finds the datatype based on the value passed in
-		dt, err := v.jef.GetDatatypeManager().FindDatatype(lu.String(param))
+		dV, err := v.jef.GetParserManager().ParseCode(lu.String(param))
 		if err != nil {
 			return err
 		}
 
 		// Parses the datatype value
-		paramTypes = append(paramTypes, dt)
-		value, err := dt.GetValue(lu.String(param))
-		if err != nil {
-			return err
-		}
-
-		paramValues = append(paramValues, value)
+		paramValues = append(paramValues, dV)
 	}
 
 	// Runs the function
-	err := f.RunExec(paramValues, paramTypes, v.jef)
+	err := f.RunExec(paramValues, v.jef)
 	return err
 }
