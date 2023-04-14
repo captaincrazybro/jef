@@ -19,7 +19,7 @@ func New(j domain.Jef) domain.FunctionManager {
 }
 
 // RegisterFunction registers a new function
-func (fm *functionManager) RegisterFunction(name string, funcType domain.Datatype, params []domain.Parameter, exec func(jef domain.Jef)) error {
+func (fm *functionManager) RegisterFunction(name string, funcType domain.TypeParser, params []domain.Parameter, exec func(jef domain.Jef)) error {
 	if fm.GetFunction(name) != nil {
 		return fmt.Errorf("bad function declaration, function %q has already been declared", name)
 	}
@@ -46,7 +46,7 @@ func (fm *functionManager) GetFunction(name string) domain.Function {
 }
 
 // validateParameters validates the parameters with given parameter values
-func validateParameters(f domain.Function, values []interface{}, givenTypes []domain.Datatype) error {
+func validateParameters(f domain.Function, values []interface{}, givenTypes []domain.TypeParser) error {
 	if len(values) != len(givenTypes) {
 		return fmt.Errorf("an internal error has occured! length of the values does not equal the length of the given data types")
 	} else if len(values) != len(f.GetParams()) {

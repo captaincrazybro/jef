@@ -17,7 +17,7 @@ func New(j domain.Jef) domain.VariableManager {
 }
 
 // RegisterVariable registers a variable
-func (vz *variableManager) RegisterVariable(varName string, varType domain.Datatype, value interface{}) error {
+func (vz *variableManager) RegisterVariable(varName string, varType domain.TypeParser, value interface{}) error {
 	// TODO: add variable name validation
 	if vz.GetVariable(varName) != nil {
 		return fmt.Errorf("bad variable initialization, the variable %q has already been declared", varName)

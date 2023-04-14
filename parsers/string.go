@@ -1,21 +1,19 @@
-package datatypes
+package parsers
 
 import (
 	"fmt"
+	"github.com/captaincrazybro/jef/domain"
 	lu "github.com/captaincrazybro/literalutil"
 	"regexp"
 	"strings"
 )
 
 type String struct {
+	jef domain.Jef
 }
 
-func (sD String) GetName() string {
-	return stringDatatypeName
-}
-
-func (sD String) GetVarName() string {
-	return stringDatatypeName
+func (sD String) GetType() domain.DataType {
+	return sD.jef.GetDatatypeManager().GetDatatype("string")
 }
 
 func (sD String) Check(s lu.String) bool {

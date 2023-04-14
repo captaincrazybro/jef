@@ -4,7 +4,7 @@ import "github.com/captaincrazybro/jef/domain"
 
 type function struct {
 	name       string
-	returnType domain.Datatype
+	returnType domain.TypeParser
 	exec       func(domain.Jef)
 	params     []domain.Parameter
 }
@@ -13,7 +13,7 @@ func (f function) GetName() string {
 	return f.name
 }
 
-func (f function) GetReturnType() domain.Datatype {
+func (f function) GetReturnType() domain.TypeParser {
 	return f.returnType
 }
 
@@ -25,7 +25,7 @@ func (f function) GetParams() []domain.Parameter {
 	return f.params
 }
 
-func (f function) RunExec(values []interface{}, types []domain.Datatype, j domain.Jef) error {
+func (f function) RunExec(values []interface{}, types []domain.TypeParser, j domain.Jef) error {
 	// Validates the function values
 	err := validateParameters(f, values, types)
 	if err != nil {

@@ -5,6 +5,7 @@ import (
 	"github.com/captaincrazybro/jef/datatypes"
 	"github.com/captaincrazybro/jef/domain"
 	"github.com/captaincrazybro/jef/functions"
+	"github.com/captaincrazybro/jef/parsers"
 	"github.com/captaincrazybro/jef/variable"
 	lu "github.com/captaincrazybro/literalutil"
 	c "github.com/captaincrazybro/literalutil/console"
@@ -20,6 +21,7 @@ type jef struct {
 	variables domain.VariableManager
 	functions domain.FunctionManager
 	datatypes domain.DatatypeManager
+	parsers domain.ParserManager
 }
 
 // New creates a new instance of Jef
@@ -38,6 +40,7 @@ func registerManagers(j *jef) {
 	j.compilers = compilers.New(j)
 	j.variables = variable.New(j)
 	j.datatypes = datatypes.New(j)
+	j.parsers = parsers.New(j)
 	j.functions = functions.New(j)
 }
 
@@ -80,6 +83,10 @@ func (j *jef) GetFunctionManager() domain.FunctionManager {
 
 func (j *jef) GetDatatypeManager() domain.DatatypeManager {
 	return j.datatypes
+}
+
+func (j *jef) GetParserManager() domain.ParserManager {
+	return j.parsers
 }
 
 // New creates a new instance of Jef based on an existing

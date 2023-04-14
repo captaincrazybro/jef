@@ -4,13 +4,13 @@ import "github.com/captaincrazybro/jef/domain"
 
 type parameter struct {
 	name     string
-	dataType domain.Datatype
+	dataType domain.TypeParser
 }
 
 func (p parameter) GetName() string {
 	return p.name
 }
 
-func (p parameter) GetType() domain.Datatype {
+func (p parameter) GetType() domain.TypeParser {
 	return p.dataType
 }

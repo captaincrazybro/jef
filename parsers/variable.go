@@ -1,4 +1,4 @@
-package datatypes
+package parsers
 
 import (
 	"fmt"
@@ -11,12 +11,8 @@ type Variable struct {
 	jef domain.Jef
 }
 
-func (vD Variable) GetName() string {
-	return "<NO_TYPE>"
-}
-
-func (vD Variable) GetVarName() string {
-	return "variable"
+func (vD Variable) GetType() domain.DataType {
+	return nil
 }
 
 func (vD Variable) Check(s lu.String) bool {

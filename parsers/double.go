@@ -1,20 +1,18 @@
-package datatypes
+package parsers
 
 import (
+	"github.com/captaincrazybro/jef/domain"
 	lu "github.com/captaincrazybro/literalutil"
 	"regexp"
 	"strconv"
 )
 
 type Double struct {
+	jef domain.Jef
 }
 
-func (dD Double) GetName() string {
-	return doubleDatatypeName
-}
-
-func (dD Double) GetVarName() string {
-	return doubleDatatypeName
+func (dD Double) GetType() domain.DataType {
+	return dD.jef.GetDatatypeManager().GetDatatype("double")
 }
 
 func (dD Double) Check(s lu.String) bool {

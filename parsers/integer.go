@@ -1,20 +1,18 @@
-package datatypes
+package parsers
 
 import (
+	"github.com/captaincrazybro/jef/domain"
 	lu "github.com/captaincrazybro/literalutil"
 	"regexp"
 	"strconv"
 )
 
 type Integer struct {
+	jef domain.Jef
 }
 
-func (iD Integer) GetName() string {
-	return integerDatatypeName
-}
-
-func (iD Integer) GetVarName() string {
-	return integerDatatypeName
+func (iD Integer) GetType() domain.DataType {
+	return iD.jef.GetDatatypeManager().GetDatatype("int")
 }
 
 func (iD Integer) Check(s lu.String) bool {

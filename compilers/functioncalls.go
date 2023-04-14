@@ -38,7 +38,7 @@ func (v functioncalls) Run(s lu.String, line *int) error {
 	// Parses parameters
 	rawParams := subz[2]
 	params := strings.Split(rawParams, ",")
-	var paramTypes []domain.Datatype
+	var paramTypes []domain.TypeParser
 	var paramValues []interface{}
 	for _, param := range params {
 		// Finds the datatype based on the value passed in

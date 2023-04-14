@@ -16,6 +16,7 @@ type Jef interface {
 	GetVariableManager() VariableManager
 	GetFunctionManager() FunctionManager
 	GetDatatypeManager() DatatypeManager
+	GetParserManager() ParserManager
 	New(code string) Jef
 	NewCodeless() Jef
 }
@@ -29,7 +30,7 @@ type Compiler interface {
 
 // Variable interface to store a variable
 type Variable interface {
-	GetType() Datatype
+	GetType() TypeParser
 	GetValue() interface{}
 	GetName() string
 }
@@ -37,30 +38,34 @@ type Variable interface {
 // Function interface to store a function
 type Function interface {
 	GetName() string
-	GetReturnType() Datatype
+	GetReturnType() TypeParser
 	GetExec() func(Jef)
 	GetParams() []Parameter
-	RunExec([]interface{}, []Datatype, Jef) error
+	RunExec([]interface{}, []TypeParser, Jef) error
 }
 
 // Parameter interface to store a parameter
 type Parameter interface {
 	GetName() string
-	GetType() Datatype
+	GetType() TypeParser
 }
 
-// Datatype interface to store a Datatype
-type Datatype interface {
-	GetName() string
-	GetVarName() string
+// TypeParser interface to store a TypeParser
+type TypeParser interface {
+	GetType() DataType
 	Check(lu.String) bool
 	GetValue(lu.String) (interface{}, error)
 }
 
+// DataType interface to store a datatype
+type DataType interface {
+	GetName() string
+	// TODO: Implement a method to get relevant parsers for the given datatype
+}
+
 // DataValue interface to store a data value
 type DataValue interface {
-	GetType() Datatype
-	GetTypeName() string
+	GetType() DataType
 	GetValue() interface{}
 }
 
@@ -72,20 +77,25 @@ type CompilerManager interface {
 
 // VariableManager interface to store instance of variableManager
 type VariableManager interface {
-	RegisterVariable(string, Datatype, interface{}) error
+	RegisterVariable(string, TypeParser, interface{}) error
 	GetVariable(string) Variable
 	GetVariables() []Variable
 }
 
 // FunctionManager interface to store instance of functionManager
 type FunctionManager interface {
-	RegisterFunction(string, Datatype, []Parameter, func(Jef)) error
+	RegisterFunction(string, TypeParser, []Parameter, func(Jef)) error
 	GetFunction(string) Function
 }
 
 // DatatypeManager interface to store instance of datatypeManager
 type DatatypeManager interface {
-	AddDatatype(Datatype)
-	FindDatatype(lu.String) (DataValue, error)
-	GetDatatype(string) Datatype
+	AddDataType(DataType)
+	GetDatatype(string) DataType
+}
+
+// ParserManager interface to store instance of parserManager
+type ParserManager interface {
+	AddParser(TypeParser)
+	ParseCode(lu.String) (DataValue, error)
 }
