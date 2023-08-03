@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"github.com/captaincrazybro/jef/util"
 	lu "github.com/captaincrazybro/literalutil"
 )
 
@@ -17,7 +18,8 @@ type Jef interface {
 	GetFunctionManager() FunctionManager
 	GetDatatypeManager() DatatypeManager
 	GetParserManager() ParserManager
-	New(code string) Jef
+	New([]lu.String) Jef
+	NewFromCode(string) Jef
 	NewCodeless() Jef
 }
 
@@ -25,7 +27,7 @@ type Jef interface {
 type Compiler interface {
 	GetName() string
 	Check(lu.String) bool
-	Run(lu.String, *int) error
+	Run(*util.LineIterator) error
 }
 
 // Variable interface to store a variable
@@ -72,7 +74,7 @@ type DataValue interface {
 // CompilerManager interface to store compilerManager instance
 type CompilerManager interface {
 	AddCompiler(Compiler)
-	CompileLine(lu.String, *int) error
+	CompileLine(*util.LineIterator) error
 }
 
 // VariableManager interface to store instance of variableManager

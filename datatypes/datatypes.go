@@ -32,7 +32,7 @@ func (dm *datatypeManager) AddDataType(dataType domain.DataType) {
 
 // GetDatatype gets a datatype based on the name of the datatype
 func (dm *datatypeManager) GetDatatype(name string) domain.DataType {
-	// Loops through the datatypes
+	// Loops through the dataTypes and trys to find the given dataType
 	for _, dt := range dm.dataTypes {
 		if dt.GetName() == name {
 			return dt
@@ -41,3 +41,5 @@ func (dm *datatypeManager) GetDatatype(name string) domain.DataType {
 
 	return nil
 }
+
+// GetTypeParsers gets a list of parsers that could return the given

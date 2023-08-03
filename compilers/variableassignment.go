@@ -2,6 +2,7 @@ package compilers
 
 import (
 	"github.com/captaincrazybro/jef/domain"
+	"github.com/captaincrazybro/jef/util"
 	lu "github.com/captaincrazybro/literalutil"
 )
 
@@ -19,7 +20,8 @@ func (v variableAssignment) Check(s lu.String) bool {
 	return s.Contains("=") && s.Split("=").Len() >= 2
 }
 
-func (v variableAssignment) Run(s lu.String, line *int) error {
+func (v variableAssignment) Run(iter *util.LineIterator) error {
+	s := iter.Current()
 	varName := s.Split("=")[0].ReplaceAll(" ", "")
 	value := s.Split("=")[1]
 

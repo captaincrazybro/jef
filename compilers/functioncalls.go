@@ -3,6 +3,7 @@ package compilers
 import (
 	"fmt"
 	"github.com/captaincrazybro/jef/domain"
+	"github.com/captaincrazybro/jef/util"
 	lu "github.com/captaincrazybro/literalutil"
 	"regexp"
 	"strings"
@@ -23,7 +24,8 @@ func (v functioncalls) Check(s lu.String) bool {
 	return r.MatchString(s.Tos())
 }
 
-func (v functioncalls) Run(s lu.String, line *int) error {
+func (v functioncalls) Run(iter *util.LineIterator) error {
+	s := iter.Current()
 	// Gets the function name and parameter details
 	r, _ := regexp.Compile("([a-zA-Z][a-zA-Z0-9]*)\\((.*)\\)")
 	subz := r.FindStringSubmatch(s.Tos())

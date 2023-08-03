@@ -6,6 +6,7 @@ import (
 	"github.com/captaincrazybro/jef/domain"
 	"github.com/captaincrazybro/jef/functions"
 	"github.com/captaincrazybro/jef/typeparsers"
+	"github.com/captaincrazybro/jef/util"
 	"github.com/captaincrazybro/jef/variable"
 	lu "github.com/captaincrazybro/literalutil"
 	c "github.com/captaincrazybro/literalutil/console"
@@ -16,7 +17,7 @@ func init() {
 }
 
 type jef struct {
-	code      lu.String
+	lines     []lu.String
 	compilers domain.CompilerManager
 	variables domain.VariableManager
 	functions domain.FunctionManager
@@ -24,10 +25,16 @@ type jef struct {
 	parsers   domain.ParserManager
 }
 
-// New creates a new instance of Jef
-func New(code string) domain.Jef {
+// NewFromCode creates a new instance of Jef
+func NewFromCode(code string) domain.Jef {
+	lines := lu.String(code).Split("\n")
+	return New(lines)
+}
+
+// New creates a new instance of jef with a list of lines
+func New(lines []lu.String) domain.Jef {
 	j := jef{
-		code: lu.String(code),
+		lines: lines,
 	}
 
 	registerManagers(&j)
@@ -57,14 +64,13 @@ func (j *jef) Check() {
 
 // Run runs the code
 func (j *jef) Run() {
-	code := j.code
-	lines := code.Split("\n")
+	iter := util.LineIterator{}
+	iter.New(j.lines)
 
-	for i := 0; i < lines.Len(); i++ {
-		lineValue := lines[i]
-		err := j.GetCompilerManager().CompileLine(lineValue, &i)
+	for iter.Next() {
+		err := j.GetCompilerManager().CompileLine(&iter)
 		if err != nil {
-			c.Flnf("%s - line: %d", err, i+1)
+			c.Flnf("%s - line: %d", err, iter.Index()+1)
 		}
 	}
 }
@@ -89,10 +95,16 @@ func (j *jef) GetParserManager() domain.ParserManager {
 	return j.parsers
 }
 
-// New creates a new instance of Jef based on an existing
-func (j *jef) New(code string) domain.Jef {
+// NewFromCode creates a new instance of Jef based on an existing
+func (j *jef) NewFromCode(code string) domain.Jef {
+	lines := lu.String(code).Split("\n")
+	return j.New(lines)
+}
+
+// New creates a new instance of Jef based on a list of lines
+func (j *jef) New(lines []lu.String) domain.Jef {
 	newJef := jef{
-		code:      lu.String(code),
+		lines:     lines,
 		compilers: j.GetCompilerManager(),
 		functions: j.GetFunctionManager(),
 		variables: j.GetVariableManager(),

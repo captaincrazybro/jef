@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/captaincrazybro/jef/domain"
 	"github.com/captaincrazybro/jef/util"
-	lu "github.com/captaincrazybro/literalutil"
 )
 
 // compilerManager structure to store compilerManager instance
@@ -31,15 +30,14 @@ func (cz *compilerManager) AddCompiler(c domain.Compiler) {
 }
 
 // CompileLine finds the appropriate compilers and runs it
-func (cz compilerManager) CompileLine(s lu.String, line *int) error {
-	// Trims the whitespaces around
-	s = util.TrimWhitespaces(s)
+func (cz *compilerManager) CompileLine(iter *util.LineIterator) error {
+	s := iter.Current()
 	// comment checker
 	if s.ReplaceAll(" ", "").HasPrefix("//") {
 		return nil
 	}
 
-	// Checks if empty line
+	// Checks if empty lines lu.String, line *int
 	if s == "" {
 		return nil
 	}
@@ -55,8 +53,8 @@ func (cz compilerManager) CompileLine(s lu.String, line *int) error {
 
 	// checks if a compilers exists for this line
 	if compiler == nil {
-		return fmt.Errorf("unexpected line at line number %d, %q", *line+1, s)
+		return fmt.Errorf("unexpected line at line number %d, %q", iter.Index()+1, s)
 	}
 
-	return compiler.Run(s, line)
+	return compiler.Run(iter)
 }
