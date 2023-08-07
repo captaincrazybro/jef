@@ -1,6 +1,7 @@
 package jef
 
 import (
+	"fmt"
 	"github.com/captaincrazybro/jef/compilers"
 	"github.com/captaincrazybro/jef/datatypes"
 	"github.com/captaincrazybro/jef/domain"
@@ -18,6 +19,7 @@ func init() {
 
 type jef struct {
 	lines     []lu.String
+	isSubJef  bool
 	compilers domain.CompilerManager
 	variables domain.VariableManager
 	functions domain.FunctionManager
@@ -63,16 +65,22 @@ func (j *jef) Check() {
 }
 
 // Run runs the code
-func (j *jef) Run() {
+func (j *jef) Run() error {
 	iter := util.LineIterator{}
 	iter.New(j.lines)
 
 	for iter.Next() {
 		err := j.GetCompilerManager().CompileLine(&iter)
 		if err != nil {
-			c.Flnf("%s - line: %d", err, iter.Index()+1)
+			if j.isSubJef {
+				return fmt.Errorf("%s", err)
+			} else {
+				return fmt.Errorf("%s - line: %d", err, iter.Index()+1)
+			}
 		}
 	}
+
+	return nil
 }
 
 func (j *jef) GetCompilerManager() domain.CompilerManager {
@@ -103,26 +111,30 @@ func (j *jef) NewFromCode(code string) domain.Jef {
 
 // New creates a new instance of Jef based on a list of lines
 func (j *jef) New(lines []lu.String) domain.Jef {
-	newJef := jef{
+	newJef := &jef{
 		lines:     lines,
+		isSubJef:  true,
 		compilers: j.GetCompilerManager(),
-		functions: j.GetFunctionManager(),
-		variables: j.GetVariableManager(),
 		dataTypes: j.GetDatatypeManager(),
 	}
 
-	return &newJef
+	newJef.functions = j.GetFunctionManager().Copy(newJef)
+	newJef.variables = j.GetVariableManager().Copy(newJef)
+
+	return newJef
 }
 
 // NewCodeless creates a new instance of Jef based on an existing, without code
 // This is only used for system functions that do not need to run code
 func (j *jef) NewCodeless() domain.Jef {
-	newJef := jef{
+	newJef := &jef{
+		isSubJef:  true,
 		compilers: j.GetCompilerManager(),
-		functions: j.GetFunctionManager(),
-		variables: j.GetVariableManager(),
 		dataTypes: j.GetDatatypeManager(),
 	}
 
-	return &newJef
+	newJef.functions = j.GetFunctionManager().Copy(newJef)
+	newJef.variables = j.GetVariableManager().Copy(newJef)
+
+	return newJef
 }

@@ -21,3 +21,6 @@
 test/
 test
 test/*
+
+# go.sum file
+go.sum

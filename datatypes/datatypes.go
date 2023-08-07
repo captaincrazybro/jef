@@ -22,6 +22,7 @@ func (dm *datatypeManager) registerDataTypes() {
 	dm.AddDataType(dataType{name: "string"})
 	dm.AddDataType(dataType{name: "int"})
 	dm.AddDataType(dataType{name: "double"})
+	dm.AddDataType(dataType{name: "boolean"})
 	dm.AddDataType(dataType{name: "any"})
 }
 

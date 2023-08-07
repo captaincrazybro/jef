@@ -3,7 +3,6 @@ package compilers
 import (
 	"fmt"
 	"github.com/captaincrazybro/jef/domain"
-	"github.com/captaincrazybro/jef/util"
 )
 
 // compilerManager structure to store compilerManager instance
@@ -21,6 +20,7 @@ func New(j domain.Jef) domain.CompilerManager {
 // Init registers all compilerManager
 func (cz *compilerManager) registerCompilers(j domain.Jef) {
 	cz.AddCompiler(variableAssignment{j})
+	cz.AddCompiler(&ifElse{j})
 	cz.AddCompiler(functioncalls{j})
 }
 
@@ -30,7 +30,7 @@ func (cz *compilerManager) AddCompiler(c domain.Compiler) {
 }
 
 // CompileLine finds the appropriate compilers and runs it
-func (cz *compilerManager) CompileLine(iter *util.LineIterator) error {
+func (cz *compilerManager) CompileLine(iter domain.LineIterator) error {
 	s := iter.Current()
 	// comment checker
 	if s.ReplaceAll(" ", "").HasPrefix("//") {

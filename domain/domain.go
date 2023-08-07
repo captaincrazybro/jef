@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"github.com/captaincrazybro/jef/util"
 	lu "github.com/captaincrazybro/literalutil"
 )
 
@@ -12,7 +11,7 @@ import (
 type Jef interface {
 	Moto()
 	Check()
-	Run()
+	Run() error
 	GetCompilerManager() CompilerManager
 	GetVariableManager() VariableManager
 	GetFunctionManager() FunctionManager
@@ -27,7 +26,7 @@ type Jef interface {
 type Compiler interface {
 	GetName() string
 	Check(lu.String) bool
-	Run(*util.LineIterator) error
+	Run(LineIterator) error
 }
 
 // Variable interface to store a variable
@@ -35,15 +34,16 @@ type Variable interface {
 	GetType() DataType
 	GetValue() interface{}
 	GetName() string
+	UpdateValue(interface{})
 }
 
 // Function interface to store a function
 type Function interface {
 	GetName() string
 	GetReturnType() TypeParser
-	GetExec() func(Jef)
+	GetExec() func()
 	GetParams() []Parameter
-	RunExec([]DataValue, Jef) error
+	RunExec([]DataValue) error
 }
 
 // Parameter interface to store a parameter
@@ -74,20 +74,24 @@ type DataValue interface {
 // CompilerManager interface to store compilerManager instance
 type CompilerManager interface {
 	AddCompiler(Compiler)
-	CompileLine(*util.LineIterator) error
+	CompileLine(LineIterator) error
 }
 
 // VariableManager interface to store instance of variableManager
 type VariableManager interface {
-	RegisterVariable(string, DataType, interface{}) error
+	RegisterVariable(string, DataType, interface{}) bool
+	UpdateVariable(string, DataType, interface{}) error
+	DeleteVariable(string) error
 	GetVariable(string) Variable
 	GetVariables() []Variable
+	Copy(newJ Jef) VariableManager
 }
 
 // FunctionManager interface to store instance of functionManager
 type FunctionManager interface {
-	RegisterFunction(string, TypeParser, []Parameter, func(Jef)) error
+	RegisterFunction(string, Jef, TypeParser, []Parameter, func()) error
 	GetFunction(string) Function
+	Copy(newJ Jef) FunctionManager
 }
 
 // DatatypeManager interface to store instance of datatypeManager
@@ -100,4 +104,15 @@ type DatatypeManager interface {
 type ParserManager interface {
 	AddParser(TypeParser)
 	ParseCode(lu.String) (DataValue, error)
+}
+
+// LineIterator interface to store instance of LineBreak in utils
+type LineIterator interface {
+	New(newLines []lu.String)
+	Next() bool
+	Current() lu.String
+	Index() int
+	Lines() []lu.String
+	GoToLine(i int)
+	EditCurrent(s lu.String)
 }

@@ -6,8 +6,8 @@ import (
 )
 
 // registerFunctions registers system functions
-func (fm *functionManager) registerFunctions(j domain.Jef) {
-	fm.RegisterFunction("print", nil, []domain.Parameter{parameter{name: "o", dataType: fm.jef.GetDatatypeManager().GetDatatype("any")}}, func(jef domain.Jef) {
-		fmt.Println(j.GetVariableManager().GetVariable("o").GetValue())
+func (fm *functionManager) registerFunctions(jef domain.Jef) {
+	fm.RegisterFunction("print", jef, nil, []domain.Parameter{parameter{name: "o", dataType: fm.jef.GetDatatypeManager().GetDatatype("any")}}, func() {
+		fmt.Println(jef.GetVariableManager().GetVariable("o").GetValue())
 	})
 }

@@ -3,7 +3,6 @@ package compilers
 import (
 	"fmt"
 	"github.com/captaincrazybro/jef/domain"
-	"github.com/captaincrazybro/jef/util"
 	lu "github.com/captaincrazybro/literalutil"
 	"regexp"
 	"strings"
@@ -24,7 +23,7 @@ func (v functioncalls) Check(s lu.String) bool {
 	return r.MatchString(s.Tos())
 }
 
-func (v functioncalls) Run(iter *util.LineIterator) error {
+func (v functioncalls) Run(iter domain.LineIterator) error {
 	s := iter.Current()
 	// Gets the function name and parameter details
 	r, _ := regexp.Compile("([a-zA-Z][a-zA-Z0-9]*)\\((.*)\\)")
@@ -53,6 +52,6 @@ func (v functioncalls) Run(iter *util.LineIterator) error {
 	}
 
 	// Runs the function
-	err := f.RunExec(paramValues, v.jef)
+	err := f.RunExec(paramValues)
 	return err
 }

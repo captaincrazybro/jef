@@ -18,7 +18,7 @@ func (lI *LineIterator) New(newLines []lu.String) {
 // If it is not possible, it will return false
 func (lI *LineIterator) Next() bool {
 	// Checks to see if the index has exceeded the array length
-	if lI.i >= len(lI.lines)+1 {
+	if lI.i+1 >= len(lI.lines) {
 		return false
 	} else {
 		// Advances the index of the iterator
@@ -44,4 +44,14 @@ func (lI *LineIterator) Index() int {
 // Lines gets the array of lines
 func (lI *LineIterator) Lines() []lu.String {
 	return lI.lines
+}
+
+// GoToLine sets the current line number to a specific index
+func (lI *LineIterator) GoToLine(i int) {
+	lI.i = i
+}
+
+// EditCurrent edits the current line
+func (lI *LineIterator) EditCurrent(s lu.String) {
+	lI.lines[lI.i] = s
 }

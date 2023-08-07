@@ -10,8 +10,8 @@ type variable struct {
 }
 
 // createVariable creates a variable structure
-func createVariable(name string, varType domain.DataType, value interface{}) variable {
-	return variable{
+func createVariable(name string, varType domain.DataType, value interface{}) *variable {
+	return &variable{
 		variableType: varType,
 		value:        value,
 		name:         name,
@@ -31,4 +31,9 @@ func (v variable) GetValue() interface{} {
 // GetName gets the variable name
 func (v variable) GetName() string {
 	return v.name
+}
+
+// UpdateValue updates the variable value
+func (v variable) UpdateValue(newValue interface{}) {
+	v.value = newValue
 }

@@ -18,14 +18,21 @@ func New(j domain.Jef) domain.FunctionManager {
 	return fm
 }
 
+// Copy creates a copy of the instance of functionManager
+func (fm *functionManager) Copy(newJ domain.Jef) domain.FunctionManager {
+	newFm := &functionManager{functions: fm.functions, jef: newJ}
+	return newFm
+}
+
 // RegisterFunction registers a new function
-func (fm *functionManager) RegisterFunction(name string, funcType domain.TypeParser, params []domain.Parameter, exec func(jef domain.Jef)) error {
+func (fm *functionManager) RegisterFunction(name string, jef domain.Jef, funcType domain.TypeParser, params []domain.Parameter, exec func()) error {
 	if fm.GetFunction(name) != nil {
 		return fmt.Errorf("bad function declaration, function %q has already been declared", name)
 	}
 
 	function := function{
 		name:       name,
+		jef:        jef,
 		returnType: funcType,
 		exec:       exec,
 		params:     params,
