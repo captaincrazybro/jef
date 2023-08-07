@@ -1,6 +1,8 @@
 package variable
 
-import "github.com/captaincrazybro/jef/domain"
+import (
+	"github.com/captaincrazybro/jef/domain"
+)
 
 // variable structure to store a Variable
 type variable struct {
@@ -19,21 +21,21 @@ func createVariable(name string, varType domain.DataType, value interface{}) *va
 }
 
 // GetType gets the variable type
-func (v variable) GetType() domain.DataType {
+func (v *variable) GetType() domain.DataType {
 	return v.variableType
 }
 
 // GetValue gets the variable value
-func (v variable) GetValue() interface{} {
+func (v *variable) GetValue() interface{} {
 	return v.value
 }
 
 // GetName gets the variable name
-func (v variable) GetName() string {
+func (v *variable) GetName() string {
 	return v.name
 }
 
 // UpdateValue updates the variable value
-func (v variable) UpdateValue(newValue interface{}) {
+func (v *variable) UpdateValue(newValue interface{}) {
 	v.value = newValue
 }

@@ -8,7 +8,7 @@ type function struct {
 	jef        domain.Jef
 	name       string
 	returnType domain.TypeParser
-	exec       func()
+	exec       func(jef domain.Jef)
 	params     []domain.Parameter
 }
 
@@ -20,7 +20,7 @@ func (f function) GetReturnType() domain.TypeParser {
 	return f.returnType
 }
 
-func (f function) GetExec() func() {
+func (f function) GetExec() func(domain.Jef) {
 	return f.exec
 }
 
@@ -51,6 +51,6 @@ func (f function) RunExec(values []domain.DataValue) error {
 		newJ.GetVariableManager().RegisterVariable(param.GetName(), dType, val.GetValue())
 	}
 
-	f.exec()
+	f.exec(newJ)
 	return nil
 }

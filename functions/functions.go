@@ -25,7 +25,7 @@ func (fm *functionManager) Copy(newJ domain.Jef) domain.FunctionManager {
 }
 
 // RegisterFunction registers a new function
-func (fm *functionManager) RegisterFunction(name string, jef domain.Jef, funcType domain.TypeParser, params []domain.Parameter, exec func()) error {
+func (fm *functionManager) RegisterFunction(name string, jef domain.Jef, funcType domain.TypeParser, params []domain.Parameter, exec func(domain.Jef)) error {
 	if fm.GetFunction(name) != nil {
 		return fmt.Errorf("bad function declaration, function %q has already been declared", name)
 	}

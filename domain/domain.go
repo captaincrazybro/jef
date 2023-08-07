@@ -41,7 +41,7 @@ type Variable interface {
 type Function interface {
 	GetName() string
 	GetReturnType() TypeParser
-	GetExec() func()
+	GetExec() func(Jef)
 	GetParams() []Parameter
 	RunExec([]DataValue) error
 }
@@ -89,7 +89,7 @@ type VariableManager interface {
 
 // FunctionManager interface to store instance of functionManager
 type FunctionManager interface {
-	RegisterFunction(string, Jef, TypeParser, []Parameter, func()) error
+	RegisterFunction(string, Jef, TypeParser, []Parameter, func(Jef)) error
 	GetFunction(string) Function
 	Copy(newJ Jef) FunctionManager
 }
