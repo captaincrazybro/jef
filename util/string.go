@@ -60,3 +60,8 @@ func SplitStartOfStatement(line lu.String) (lu.String, lu.String) {
 
 	return line, ""
 }
+
+// ReadSubMathStatement reads in a smaller math statement surrounded by parenthesis
+func ReadSubMathStatement(s lu.String) (error, int) {
+
+}
