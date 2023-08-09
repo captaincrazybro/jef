@@ -26,6 +26,7 @@ func (pm *parserManager) registerParsers() {
 	pm.AddParser(String{jef: pm.jef})
 	pm.AddParser(Boolean{jef: pm.jef})
 	pm.AddParser(Variable{jef: pm.jef})
+	pm.AddParser(Math{jef: pm.jef})
 }
 
 // AddParser adds a parser to the datatype manager
