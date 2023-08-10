@@ -60,3 +60,35 @@ func SplitStartOfStatement(line lu.String) (lu.String, lu.String) {
 
 	return line, ""
 }
+
+// LineHasOperators checks to see if the current line has the given operator(s)
+func LineHasOperators(s lu.String, operators []string) bool {
+	parenthesisCount := 0
+	isQuote := false
+
+	// Loops through the current string to see if it contains an isolated inequality operator
+	for i, r := range s {
+		if r == '"' && (i == 0 || s[i-1] != '\\') {
+			isQuote = !isQuote
+		}
+
+		if !isQuote {
+			if r == '(' {
+				parenthesisCount++
+			} else if r == ')' {
+				parenthesisCount--
+			} else if parenthesisCount == 0 {
+				endIndex := i + 1
+				if i+1 != len(s) && s[i+1] != ' ' {
+					endIndex++
+				}
+
+				if StringArrContains(operators, string(s[i:endIndex])) {
+					return true
+				}
+			}
+		}
+	}
+
+	return false
+}

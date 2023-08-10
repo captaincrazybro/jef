@@ -12,7 +12,7 @@ type Integer struct {
 }
 
 func (iD Integer) GetType() domain.DataType {
-	return iD.jef.GetDatatypeManager().GetDatatype("int")
+	return iD.jef.GetDatatypeManager().GetDatatype(domain.IntDataTypeName)
 }
 
 func (iD Integer) Check(s lu.String) bool {

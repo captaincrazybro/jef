@@ -18,34 +18,7 @@ func (iD Inequality) GetType() domain.DataType {
 }
 
 func (iD Inequality) Check(s lu.String) bool {
-	parenthesisCount := 0
-	isQuote := false
-
-	// Loops through the current string to see if it contains an isolated inequality operator
-	for i, r := range s {
-		if r == '"' && (i == 0 && s[i-1] != '\\') {
-			isQuote = !isQuote
-		}
-
-		if !isQuote {
-			if r == '(' {
-				parenthesisCount++
-			} else if r == ')' {
-				parenthesisCount--
-			} else if parenthesisCount == 0 {
-				endIndex := i + 1
-				if i+1 != len(s) && s[i+1] != ' ' {
-					endIndex++
-				}
-
-				if util.StringArrContains(inequalityOperators, string(s[i:endIndex])) {
-					return true
-				}
-			}
-		}
-	}
-
-	return false
+	return util.LineHasOperators(s, inequalityOperators)
 }
 
 func (iD Inequality) GetValue(s lu.String) (domain.DataValue, error) {
@@ -56,7 +29,7 @@ func (iD Inequality) GetValue(s lu.String) (domain.DataValue, error) {
 
 	// Loops through the current string to see if it contains an isolated inequality operator
 	for i, r := range s {
-		if r == '"' && (i == 0 && s[i-1] != '\\') {
+		if r == '"' && (i == 0 || s[i-1] != '\\') {
 			isQuote = !isQuote
 		}
 

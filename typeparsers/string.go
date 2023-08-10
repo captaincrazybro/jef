@@ -13,7 +13,7 @@ type String struct {
 }
 
 func (sD String) GetType() domain.DataType {
-	return sD.jef.GetDatatypeManager().GetDatatype("string")
+	return sD.jef.GetDatatypeManager().GetDatatype(domain.StringDataTypeName)
 }
 
 func (sD String) Check(s lu.String) bool {

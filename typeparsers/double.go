@@ -12,7 +12,7 @@ type Double struct {
 }
 
 func (dD Double) GetType() domain.DataType {
-	return dD.jef.GetDatatypeManager().GetDatatype("double")
+	return dD.jef.GetDatatypeManager().GetDatatype(domain.DoubleDataTypeName)
 }
 
 func (dD Double) Check(s lu.String) bool {

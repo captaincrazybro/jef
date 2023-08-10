@@ -10,7 +10,7 @@ type Boolean struct {
 }
 
 func (bD Boolean) GetType() domain.DataType {
-	return bD.jef.GetDatatypeManager().GetDatatype("boolean")
+	return bD.jef.GetDatatypeManager().GetDatatype(domain.BooleanDataTypeName)
 }
 
 func (bD Boolean) Check(s lu.String) bool {

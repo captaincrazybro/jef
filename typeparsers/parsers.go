@@ -21,6 +21,7 @@ func New(j domain.Jef) domain.ParserManager {
 
 // registerParsers registers all the parsers
 func (pm *parserManager) registerParsers() {
+	pm.AddParser(Equals{jef: pm.jef})
 	pm.AddParser(Integer{jef: pm.jef})
 	pm.AddParser(Double{jef: pm.jef})
 	pm.AddParser(String{jef: pm.jef})
