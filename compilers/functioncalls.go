@@ -9,21 +9,21 @@ import (
 )
 
 // variableAssignment structure to compile variables
-type functioncalls struct {
+type functionCalls struct {
 	jef domain.Jef
 }
 
-func (v functioncalls) GetName() string {
+func (v functionCalls) GetName() string {
 	return functionCallName
 }
 
-func (v functioncalls) Check(s lu.String) bool {
+func (v functionCalls) Check(s lu.String) bool {
 	// Validates the function call without the parameters
 	r, _ := regexp.Compile("[a-zA-Z][a-zA-Z0-9]*\\((.*)\\)")
 	return r.MatchString(s.Tos())
 }
 
-func (v functioncalls) Run(iter domain.LineIterator) error {
+func (v functionCalls) Run(iter domain.LineIterator) error {
 	s := iter.Current()
 	// Gets the function name and parameter details
 	r, _ := regexp.Compile("([a-zA-Z][a-zA-Z0-9]*)\\((.*)\\)")

@@ -19,9 +19,9 @@ func New(j domain.Jef) domain.CompilerManager {
 
 // Init registers all compilerManager
 func (cz *compilerManager) registerCompilers(j domain.Jef) {
+	cz.AddCompiler(functionCalls{j})
 	cz.AddCompiler(variableAssignment{j})
 	cz.AddCompiler(&ifElse{j})
-	cz.AddCompiler(functioncalls{j})
 }
 
 // AddCompiler adds a compilers to the compilers list
