@@ -21,7 +21,7 @@ func New(j domain.Jef) domain.CompilerManager {
 func (cz *compilerManager) registerCompilers(j domain.Jef) {
 	cz.AddCompiler(functionCalls{j})
 	cz.AddCompiler(variableAssignment{j})
-	cz.AddCompiler(&while{j})
+	cz.AddCompiler(&whileLoop{j})
 	cz.AddCompiler(&ifElse{j})
 }
 

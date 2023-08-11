@@ -9,36 +9,36 @@ import (
 	"strings"
 )
 
-// ifElse structure for the ifElse compiler
-type while struct {
+// whileLoop structure for the whileLoop compiler
+type whileLoop struct {
 	jef domain.Jef
 }
 
-// GetName function to return the name of the ifElse compiler
-func (w *while) GetName() string {
-	return ifElseName
+// GetName function to return the name of the while compiler
+func (w *whileLoop) GetName() string {
+	return whileLoopName
 }
 
-// Check checks the current line to see if it is an if statement
-func (w *while) Check(s lu.String) bool {
+// Check checks the current line to see if it is an while statement
+func (w *whileLoop) Check(s lu.String) bool {
 	return s.HasPrefix("while ") || s == "while"
 }
 
 // Run runs lines of code included in the while loop
-func (w *while) Run(iter domain.LineIterator) error {
-	// Makes sure the while loop has a conditional statement
-	ifR1, _ := regexp.Compile("^while +(\\S.*)$")
+func (w *whileLoop) Run(iter domain.LineIterator) error {
+	// Makes sure the whileLoop loop has a conditional statement
+	ifR1, _ := regexp.Compile("^whileLoop +(\\S.*)$")
 	if !ifR1.MatchString(iter.Current().Tos()) {
-		return fmt.Errorf("invalid while loop! if statement must have a boolean conditional statement after while identifier")
+		return fmt.Errorf("invalid while statement! if statement must have a boolean conditional statement after while identifier")
 	}
 
-	// Parses the while loops
+	// Parses the whileLoop loops
 	err, whileCondStr, whileJef := parseWhileCondStat(ifR1, iter, w.jef)
 	if err != nil {
 		return err
 	}
 
-	// Runs the while loop and evals the whileCondStr each time
+	// Runs the whileLoop loop and evals the whileCondStr each time
 	whileCondData, err := w.jef.GetParserManager().ParseCode(whileCondStr)
 	if err != nil {
 		return err
@@ -53,7 +53,7 @@ func (w *while) Run(iter domain.LineIterator) error {
 			return err
 		}
 
-		// Reevaluates the while conditional
+		// Reevaluates the whileLoop conditional
 		whileCondData, err = w.jef.GetParserManager().ParseCode(whileCondStr)
 		if err != nil {
 			return err
@@ -80,7 +80,7 @@ func parseWhileCondStat(r1 *regexp.Regexp, iter domain.LineIterator, curJef doma
 	} else {
 		iter.Next()
 		if !iter.Current().HasPrefix("{") {
-			return fmt.Errorf("invalid if statement! could not find a closing '{'"), "", nil
+			return fmt.Errorf("invalid while statement! could not find a closing '{'"), "", nil
 		}
 		splitCondStr := iter.Current().Split("{")
 		iter.EditCurrent(lu.String(strings.Join(splitCondStr[1:splitCondStr.Len()].Tosa(), "{")))
