@@ -27,13 +27,13 @@ func (w *whileLoop) Check(s lu.String) bool {
 // Run runs lines of code included in the while loop
 func (w *whileLoop) Run(iter domain.LineIterator) error {
 	// Makes sure the whileLoop loop has a conditional statement
-	ifR1, _ := regexp.Compile("^whileLoop +(\\S.*)$")
+	ifR1, _ := regexp.Compile("^while +(\\S.*)$")
 	if !ifR1.MatchString(iter.Current().Tos()) {
 		return fmt.Errorf("invalid while statement! if statement must have a boolean conditional statement after while identifier")
 	}
 
 	// Parses the whileLoop loops
-	err, whileCondStr, whileJef := parseWhileCondStat(ifR1, iter, w.jef)
+	err, whileCondStr, whileJef := parseLoopStat(ifR1, iter, w.jef)
 	if err != nil {
 		return err
 	}
@@ -66,8 +66,8 @@ func (w *whileLoop) Run(iter domain.LineIterator) error {
 	return nil
 }
 
-// parseCondStat function to hold the steps used to parse an individual condition statement
-func parseWhileCondStat(r1 *regexp.Regexp, iter domain.LineIterator, curJef domain.Jef) (error, lu.String, domain.Jef) {
+// parseLoopStat function to hold the steps used to parse an individual condition statement
+func parseLoopStat(r1 *regexp.Regexp, iter domain.LineIterator, curJef domain.Jef) (error, lu.String, domain.Jef) {
 	// Parses first conditional statement
 	ifCondStr := lu.String(r1.FindStringSubmatch(iter.Current().Tos())[1])
 	ifCondStr = util.TrimWhitespaces(ifCondStr)
