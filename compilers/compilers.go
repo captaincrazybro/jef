@@ -19,11 +19,13 @@ func New(j domain.Jef) domain.CompilerManager {
 
 // Init registers all compilerManager
 func (cz *compilerManager) registerCompilers(j domain.Jef) {
+	cz.AddCompiler(incrementAndDecrement{j})
 	cz.AddCompiler(&forLoop{j})
 	cz.AddCompiler(&whileLoop{j})
 	cz.AddCompiler(&ifElse{j})
-	cz.AddCompiler(variableAssignment{j})
 	cz.AddCompiler(functionCalls{j})
+	cz.AddCompiler(mathAssignment{j})
+	cz.AddCompiler(variableAssignment{j})
 }
 
 // AddCompiler adds a compilers to the compilers list

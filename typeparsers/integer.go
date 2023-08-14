@@ -11,6 +11,10 @@ type Integer struct {
 	jef domain.Jef
 }
 
+func (iD Integer) GetName() string {
+	return domain.IntegerParserName
+}
+
 func (iD Integer) GetType() domain.DataType {
 	return iD.jef.GetDatatypeManager().GetDatatype(domain.IntDataTypeName)
 }

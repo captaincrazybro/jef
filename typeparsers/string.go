@@ -12,6 +12,10 @@ type String struct {
 	jef domain.Jef
 }
 
+func (sD String) GetName() string {
+	return domain.StringParserName
+}
+
 func (sD String) GetType() domain.DataType {
 	return sD.jef.GetDatatypeManager().GetDatatype(domain.StringDataTypeName)
 }

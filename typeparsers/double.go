@@ -11,6 +11,10 @@ type Double struct {
 	jef domain.Jef
 }
 
+func (dD Double) GetName() string {
+	return domain.DoubleParserName
+}
+
 func (dD Double) GetType() domain.DataType {
 	return dD.jef.GetDatatypeManager().GetDatatype(domain.DoubleDataTypeName)
 }

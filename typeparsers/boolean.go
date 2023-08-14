@@ -9,6 +9,10 @@ type Boolean struct {
 	jef domain.Jef
 }
 
+func (bD Boolean) GetName() string {
+	return domain.BooleanParserName
+}
+
 func (bD Boolean) GetType() domain.DataType {
 	return bD.jef.GetDatatypeManager().GetDatatype(domain.BooleanDataTypeName)
 }

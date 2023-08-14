@@ -13,6 +13,10 @@ type Inequality struct {
 	jef domain.Jef
 }
 
+func (iD Inequality) GetName() string {
+	return domain.InequalityParserName
+}
+
 func (iD Inequality) GetType() domain.DataType {
 	return iD.jef.GetDatatypeManager().GetDatatype("bool")
 }

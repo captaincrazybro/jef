@@ -11,6 +11,10 @@ type Variable struct {
 	jef domain.Jef
 }
 
+func (vD Variable) GetName() string {
+	return domain.VariableParserName
+}
+
 func (vD Variable) GetType() domain.DataType {
 	return nil
 }

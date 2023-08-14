@@ -54,6 +54,7 @@ type Parameter interface {
 
 // TypeParser interface to store a TypeParser
 type TypeParser interface {
+	GetName() string
 	GetType() DataType
 	Check(lu.String) bool
 	GetValue(lu.String) (DataValue, error)
@@ -102,6 +103,7 @@ type DatatypeManager interface {
 
 // ParserManager interface to store instance of parserManager
 type ParserManager interface {
+	GetParser(string) TypeParser
 	AddParser(TypeParser)
 	ParseCode(lu.String) (DataValue, error)
 }

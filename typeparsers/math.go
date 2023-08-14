@@ -10,7 +10,7 @@ import (
 )
 
 var mathOperators = []rune{'^', '*', '/', '+', '-'}
-var checkRegex, _ = regexp.Compile("^[^\"].*[\\^+\\-/*].*")
+var mathCheckRegex, _ = regexp.Compile("^[^\"].*[\\^+\\-/*].*")
 
 type mathChunk struct {
 	isOperator bool
@@ -23,12 +23,16 @@ type Math struct {
 	jef domain.Jef
 }
 
+func (mD Math) GetName() string {
+	return domain.MathParserName
+}
+
 func (mD Math) GetType() domain.DataType {
 	return nil
 }
 
 func (mD Math) Check(s lu.String) bool {
-	return checkRegex.MatchString(s.Tos())
+	return mathCheckRegex.MatchString(s.Tos())
 }
 
 func (mD Math) GetValue(s lu.String) (domain.DataValue, error) {
@@ -53,7 +57,7 @@ func (mD Math) GetValue(s lu.String) (domain.DataValue, error) {
 // evalMath evaluates the current math statement
 func evalMath(s lu.String, jef domain.Jef) (error, mathChunk) {
 	// Main part of the function which accounts for the regular math expressions
-	if checkRegex.MatchString(s.Tos()) {
+	if mathCheckRegex.MatchString(s.Tos()) {
 		// Divides the expression into different
 		err, chunks := splitIntoMathChunks(s)
 		if err != nil {

@@ -21,6 +21,8 @@ func New(j domain.Jef) domain.ParserManager {
 
 // registerParsers registers all the parsers
 func (pm *parserManager) registerParsers() {
+	pm.AddParser(Increment{jef: pm.jef})
+	pm.AddParser(Decrement{jef: pm.jef})
 	pm.AddParser(Equals{jef: pm.jef})
 	pm.AddParser(Integer{jef: pm.jef})
 	pm.AddParser(Double{jef: pm.jef})
@@ -29,6 +31,18 @@ func (pm *parserManager) registerParsers() {
 	pm.AddParser(Variable{jef: pm.jef})
 	pm.AddParser(Inequality{jef: pm.jef})
 	pm.AddParser(Math{jef: pm.jef})
+}
+
+// GetParser gets a parser based on it's name
+func (pm *parserManager) GetParser(name string) domain.TypeParser {
+	// loops through type parsers and finds the one with the specific name
+	for _, p := range pm.parsers {
+		if p.GetName() == name {
+			return p
+		}
+	}
+
+	return nil
 }
 
 // AddParser adds a parser to the datatype manager

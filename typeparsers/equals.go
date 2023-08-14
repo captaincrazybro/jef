@@ -11,6 +11,10 @@ type Equals struct {
 	jef domain.Jef
 }
 
+func (eD Equals) GetName() string {
+	return domain.EqualsParserName
+}
+
 func (eD Equals) GetType() domain.DataType {
 	return eD.jef.GetDatatypeManager().GetDatatype(domain.BooleanDataTypeName)
 }
