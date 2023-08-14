@@ -116,6 +116,7 @@ func (j *jef) New(lines []lu.String) domain.Jef {
 		isSubJef:  true,
 		compilers: j.GetCompilerManager(),
 		dataTypes: j.GetDatatypeManager(),
+		parsers:   j.GetParserManager(),
 	}
 
 	newJef.functions = j.GetFunctionManager().Copy(newJef)
@@ -131,6 +132,7 @@ func (j *jef) NewCodeless() domain.Jef {
 		isSubJef:  true,
 		compilers: j.GetCompilerManager(),
 		dataTypes: j.GetDatatypeManager(),
+		parsers:   j.GetParserManager(),
 	}
 
 	newJef.functions = j.GetFunctionManager().Copy(newJef)

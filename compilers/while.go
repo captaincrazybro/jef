@@ -45,7 +45,7 @@ func (w *whileLoop) Run(iter domain.LineIterator) error {
 	}
 
 	// Parses whileCondData
-	whileCond := util.ParseConditionalValue(whileCondData, w.jef)
+	whileCond := util.ParseConditionalValue(whileCondData, whileJef)
 
 	for whileCond {
 		err = whileJef.Run()
@@ -60,7 +60,7 @@ func (w *whileLoop) Run(iter domain.LineIterator) error {
 		}
 
 		// Parses whileCondData
-		whileCond = util.ParseConditionalValue(whileCondData, w.jef)
+		whileCond = util.ParseConditionalValue(whileCondData, whileJef)
 	}
 
 	return nil

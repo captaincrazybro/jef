@@ -19,10 +19,11 @@ func New(j domain.Jef) domain.CompilerManager {
 
 // Init registers all compilerManager
 func (cz *compilerManager) registerCompilers(j domain.Jef) {
-	cz.AddCompiler(functionCalls{j})
-	cz.AddCompiler(variableAssignment{j})
+	cz.AddCompiler(&forLoop{j})
 	cz.AddCompiler(&whileLoop{j})
 	cz.AddCompiler(&ifElse{j})
+	cz.AddCompiler(variableAssignment{j})
+	cz.AddCompiler(functionCalls{j})
 }
 
 // AddCompiler adds a compilers to the compilers list
@@ -34,11 +35,11 @@ func (cz *compilerManager) AddCompiler(c domain.Compiler) {
 func (cz *compilerManager) CompileLine(iter domain.LineIterator) error {
 	s := iter.Current()
 	// comment checker
-	if s.ReplaceAll(" ", "").HasPrefix("//") {
+	if s.HasPrefix("//") {
 		return nil
 	}
 
-	// Checks if empty lines lu.String, line *int
+	// Checks if empty lines
 	if s == "" {
 		return nil
 	}

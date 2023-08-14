@@ -32,34 +32,58 @@ func (fL *forLoop) Run(iter domain.LineIterator) error {
 	}
 
 	// Parses the whileLoop loops
-	err, forStr, whileJef := parseLoopStat(forR1, iter, fL.jef)
+	err, forStr, forJef := parseLoopStat(forR1, iter, fL.jef)
 	if err != nil {
 		return err
 	}
 
 	// Runs the whileLoop loop and evals the whileCondStr each time
-	whileCondData, err := fL.jef.GetParserManager().ParseCode(whileCondStr)
+	err, forExprz := splitForStatement(forStr)
 	if err != nil {
 		return err
 	}
 
-	// Parses whileCondData
-	whileCond := util.ParseConditionalValue(whileCondData, fL.jef)
+	// Runs the initial expression
+	initExprLine := util.LineIterator{}
+	initExprLine.New([]lu.String{forExprz[0]})
+	initExprLine.Next()
+	err = forJef.GetCompilerManager().CompileLine(&initExprLine)
+	if err != nil {
+		return err
+	}
 
-	for whileCond {
-		err = whileJef.Run()
+	// Parses the loop conditional statement
+	condData, err := forJef.GetParserManager().ParseCode(forExprz[1])
+	if err != nil {
+		return err
+	}
+
+	cond := util.ParseConditionalValue(condData, forJef)
+
+	// Prepares the in-loop expression
+	inLoopExprLine := util.LineIterator{}
+	inLoopExprLine.New([]lu.String{forExprz[2]})
+	inLoopExprLine.Next()
+
+	for cond {
+		err = forJef.Run()
 		if err != nil {
 			return err
 		}
 
-		// Reevaluates the whileLoop conditional
-		whileCondData, err = w.jef.GetParserManager().ParseCode(whileCondStr)
+		// Runs the in-loop expression
+		err = forJef.GetCompilerManager().CompileLine(&inLoopExprLine)
 		if err != nil {
 			return err
 		}
 
-		// Parses whileCondData
-		whileCond = util.ParseConditionalValue(whileCondData, w.jef)
+		// Reevaluates the for loop conditional
+		condData, err = forJef.GetParserManager().ParseCode(forExprz[1])
+		if err != nil {
+			return err
+		}
+
+		cond = util.ParseConditionalValue(condData, forJef)
 	}
 
 	return nil
@@ -82,9 +106,13 @@ func splitForStatement(s lu.String) (error, []lu.String) {
 		}
 	}
 
+	// Appends the last expression slice
+	strings = append(strings, s[startIndex:])
+
 	// Checks to see if there are the right amount of expressions in the statement
 	if len(strings) != 3 {
 		return fmt.Errorf("invalid for statement! invalid number of for loop expressions in for statement: looking for 3"), nil
 	}
 
+	return nil, strings
 }
