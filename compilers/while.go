@@ -33,7 +33,7 @@ func (w *whileLoop) Run(iter domain.LineIterator) error {
 	}
 
 	// Parses the whileLoop loops
-	err, whileCondStr, whileJef := parseLoopStat(ifR1, iter, w.jef)
+	err, whileCondStr, whileJef := parseLoopStat(ifR1, iter, w.jef, "while")
 	if err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func (w *whileLoop) Run(iter domain.LineIterator) error {
 }
 
 // parseLoopStat function to hold the steps used to parse an individual condition statement
-func parseLoopStat(r1 *regexp.Regexp, iter domain.LineIterator, curJef domain.Jef) (error, lu.String, domain.Jef) {
+func parseLoopStat(r1 *regexp.Regexp, iter domain.LineIterator, curJef domain.Jef, loopName string) (error, lu.String, domain.Jef) {
 	// Parses first conditional statement
 	ifCondStr := lu.String(r1.FindStringSubmatch(iter.Current().Tos())[1])
 	ifCondStr = util.TrimWhitespaces(ifCondStr)
@@ -80,7 +80,7 @@ func parseLoopStat(r1 *regexp.Regexp, iter domain.LineIterator, curJef domain.Je
 	} else {
 		iter.Next()
 		if !iter.Current().HasPrefix("{") {
-			return fmt.Errorf("invalid while statement! could not find a closing '{'"), "", nil
+			return fmt.Errorf("invalid %s statement! could not find a closing '{'", loopName), "", nil
 		}
 		splitCondStr := iter.Current().Split("{")
 		iter.EditCurrent(lu.String(strings.Join(splitCondStr[1:splitCondStr.Len()].Tosa(), "{")))
@@ -93,7 +93,7 @@ func parseLoopStat(r1 *regexp.Regexp, iter domain.LineIterator, curJef domain.Je
 	err, ifLines := util.ReadInStatement(iter)
 
 	if err != nil {
-		return fmt.Errorf("invalid while statement! %s", err), "", nil
+		return fmt.Errorf("invalid %s statement! %s", loopName, err), "", nil
 	}
 
 	// Creates new jef instance and runs it if the condition is true

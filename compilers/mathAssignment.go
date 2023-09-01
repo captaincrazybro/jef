@@ -13,7 +13,7 @@ type mathAssignment struct {
 }
 
 func (mA mathAssignment) GetName() string {
-	return variableName
+	return mathAssignmentName
 }
 
 func (mA mathAssignment) Check(s lu.String) bool {

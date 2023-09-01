@@ -32,7 +32,7 @@ func (fL *forLoop) Run(iter domain.LineIterator) error {
 	}
 
 	// Parses the whileLoop loops
-	err, forStr, forJef := parseLoopStat(forR1, iter, fL.jef)
+	err, forStr, forJef := parseLoopStat(forR1, iter, fL.jef, "for")
 	if err != nil {
 		return err
 	}

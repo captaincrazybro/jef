@@ -8,4 +8,5 @@ const (
 	forLoopName               string = "forLoop"
 	incrementAndDecrementName string = "incrementAndDecrement"
 	mathAssignmentName        string = "mathAssignment"
+	functionDeclarationName   string = "functionDeclaration"
 )
