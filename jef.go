@@ -18,13 +18,15 @@ func init() {
 }
 
 type jef struct {
-	lines     []lu.String
-	isSubJef  bool
-	compilers domain.CompilerManager
-	variables domain.VariableManager
-	functions domain.FunctionManager
-	dataTypes domain.DatatypeManager
-	parsers   domain.ParserManager
+	lines          []lu.String
+	isSubJef       bool
+	isFunction     bool
+	functionReturn domain.DataValue
+	compilers      domain.CompilerManager
+	variables      domain.VariableManager
+	functions      domain.FunctionManager
+	dataTypes      domain.DatatypeManager
+	parsers        domain.ParserManager
 }
 
 // NewFromCode creates a new instance of Jef
@@ -101,6 +103,18 @@ func (j *jef) GetDatatypeManager() domain.DatatypeManager {
 
 func (j *jef) GetParserManager() domain.ParserManager {
 	return j.parsers
+}
+
+func (j *jef) IsFunction() bool {
+	return j.isFunction
+}
+
+func (j *jef) GetFunctionReturn() domain.DataValue {
+	if j.isFunction {
+		return j.functionReturn
+	} else {
+		return nil
+	}
 }
 
 // NewFromCode creates a new instance of Jef based on an existing

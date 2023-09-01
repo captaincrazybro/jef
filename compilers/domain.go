@@ -9,4 +9,5 @@ const (
 	incrementAndDecrementName string = "incrementAndDecrement"
 	mathAssignmentName        string = "mathAssignment"
 	functionDeclarationName   string = "functionDeclaration"
+	functionReturnName        string = "functionReturn"
 )
