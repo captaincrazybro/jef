@@ -71,7 +71,8 @@ func (j *jef) Run() error {
 	iter := util.LineIterator{}
 	iter.New(j.lines)
 
-	for iter.Next() {
+	// Loops until end of lines or this is a function and a value was returned
+	for iter.Next() && j.functionReturn == nil {
 		err := j.GetCompilerManager().CompileLine(&iter)
 		if err != nil {
 			if j.isSubJef {
@@ -105,6 +106,12 @@ func (j *jef) GetParserManager() domain.ParserManager {
 	return j.parsers
 }
 
+func (j *jef) SetFunction() {
+	if !j.isFunction {
+		j.isFunction = true
+	}
+}
+
 func (j *jef) IsFunction() bool {
 	return j.isFunction
 }
@@ -114,6 +121,12 @@ func (j *jef) GetFunctionReturn() domain.DataValue {
 		return j.functionReturn
 	} else {
 		return nil
+	}
+}
+
+func (j *jef) SetFunctionReturn(data domain.DataValue) {
+	if j.isFunction {
+		j.functionReturn = data
 	}
 }
 
@@ -128,11 +141,11 @@ func (j *jef) New(lines []lu.String) domain.Jef {
 	newJef := &jef{
 		lines:     lines,
 		isSubJef:  true,
-		compilers: j.GetCompilerManager(),
 		dataTypes: j.GetDatatypeManager(),
-		parsers:   j.GetParserManager(),
 	}
 
+	newJef.parsers = typeparsers.New(newJef)
+	newJef.compilers = compilers.New(newJef)
 	newJef.functions = j.GetFunctionManager().Copy(newJef)
 	newJef.variables = j.GetVariableManager().Copy(newJef)
 
@@ -144,11 +157,11 @@ func (j *jef) New(lines []lu.String) domain.Jef {
 func (j *jef) NewCodeless() domain.Jef {
 	newJef := &jef{
 		isSubJef:  true,
-		compilers: j.GetCompilerManager(),
 		dataTypes: j.GetDatatypeManager(),
-		parsers:   j.GetParserManager(),
 	}
 
+	newJef.parsers = typeparsers.New(newJef)
+	newJef.compilers = compilers.New(newJef)
 	newJef.functions = j.GetFunctionManager().Copy(newJef)
 	newJef.variables = j.GetVariableManager().Copy(newJef)
 

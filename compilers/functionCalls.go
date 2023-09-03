@@ -41,17 +41,19 @@ func (v functionCalls) Run(iter domain.LineIterator) error {
 	params := strings.Split(rawParams, ",")
 	var paramValues []domain.DataValue
 	for _, param := range params {
-		// Finds the datatype based on the value passed in
-		dV, err := v.jef.GetParserManager().ParseCode(lu.String(param))
-		if err != nil {
-			return err
-		}
+		if param != "" {
+			// Finds the datatype based on the value passed in
+			dV, err := v.jef.GetParserManager().ParseCode(lu.String(param))
+			if err != nil {
+				return err
+			}
 
-		// Parses the datatype value
-		paramValues = append(paramValues, dV)
+			// Parses the datatype value
+			paramValues = append(paramValues, dV)
+		}
 	}
 
 	// Runs the function
-	err := f.RunExec(paramValues)
+	err, _ := f.Run(paramValues)
 	return err
 }

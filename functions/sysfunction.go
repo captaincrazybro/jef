@@ -2,30 +2,29 @@ package functions
 
 import (
 	"github.com/captaincrazybro/jef/domain"
-	lu "github.com/captaincrazybro/literalutil"
 )
 
-type function struct {
+type sysFunction struct {
 	jef        domain.Jef
 	name       string
 	returnType domain.DataType
-	lines      []lu.String
+	exec       func(jef domain.Jef) error
 	params     []domain.Parameter
 }
 
-func (f function) GetName() string {
+func (f sysFunction) GetName() string {
 	return f.name
 }
 
-func (f function) GetReturnType() domain.DataType {
+func (f sysFunction) GetReturnType() domain.DataType {
 	return f.returnType
 }
 
-func (f function) GetParams() []domain.Parameter {
+func (f sysFunction) GetParams() []domain.Parameter {
 	return f.params
 }
 
-func (f function) Run(values []domain.DataValue) (error, domain.DataValue) {
+func (f sysFunction) Run(values []domain.DataValue) (error, domain.DataValue) {
 	// Validates the sysFunction values
 	err := validateParameters(f, values, f.jef)
 	if err != nil {
@@ -33,7 +32,7 @@ func (f function) Run(values []domain.DataValue) (error, domain.DataValue) {
 	}
 
 	// Creates a new jef instance with the same variables, functions etc...
-	newJ := f.jef.New(f.lines)
+	newJ := f.jef.NewCodeless()
 	// Adds the give parameters as variables
 	for i, val := range values {
 		dType := val.GetType()
@@ -42,7 +41,7 @@ func (f function) Run(values []domain.DataValue) (error, domain.DataValue) {
 		// Checks to see if the variable already exists. If it does exist, then it deletes it
 		exists := newJ.GetVariableManager().GetVariable(param.GetName()) != nil
 		if exists {
-			err = newJ.GetVariableManager().DeleteVariable(param.GetName())
+			err := newJ.GetVariableManager().DeleteVariable(param.GetName())
 			if err != nil {
 				return err, nil
 			}
@@ -51,7 +50,6 @@ func (f function) Run(values []domain.DataValue) (error, domain.DataValue) {
 		newJ.GetVariableManager().RegisterVariable(param.GetName(), dType, val.GetValue())
 	}
 
-	newJ.SetFunction()
-	err = newJ.Run()
+	err = f.exec(newJ)
 	return err, newJ.GetFunctionReturn()
 }

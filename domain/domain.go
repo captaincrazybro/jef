@@ -17,6 +17,10 @@ type Jef interface {
 	GetFunctionManager() FunctionManager
 	GetDatatypeManager() DatatypeManager
 	GetParserManager() ParserManager
+	IsFunction() bool
+	SetFunction()
+	GetFunctionReturn() DataValue
+	SetFunctionReturn(data DataValue)
 	New([]lu.String) Jef
 	NewFromCode(string) Jef
 	NewCodeless() Jef
@@ -40,10 +44,9 @@ type Variable interface {
 // Function interface to store a function
 type Function interface {
 	GetName() string
-	GetReturnType() TypeParser
-	GetExec() func(Jef)
+	GetReturnType() DataType
 	GetParams() []Parameter
-	RunExec([]DataValue) error
+	Run([]DataValue) (error, DataValue)
 }
 
 // Parameter interface to store a parameter
@@ -90,8 +93,9 @@ type VariableManager interface {
 
 // FunctionManager interface to store instance of functionManager
 type FunctionManager interface {
-	RegisterFunction(string, Jef, TypeParser, []Parameter, func(Jef)) error
+	RegisterFunction(string, Jef, DataType, []Parameter, []lu.String) error
 	GetFunction(string) Function
+	CreateParameter(string, DataType) Parameter
 	Copy(newJ Jef) FunctionManager
 }
 

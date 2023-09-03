@@ -23,6 +23,7 @@ func (cz *compilerManager) registerCompilers(j domain.Jef) {
 	cz.AddCompiler(&forLoop{j})
 	cz.AddCompiler(&whileLoop{j})
 	cz.AddCompiler(&ifElse{j})
+	cz.AddCompiler(functionDeclaration{j})
 	cz.AddCompiler(functionCalls{j})
 	cz.AddCompiler(mathAssignment{j})
 	cz.AddCompiler(variableAssignment{j})

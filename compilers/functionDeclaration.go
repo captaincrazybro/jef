@@ -24,12 +24,12 @@ func (fD functionDeclaration) Check(s lu.String) bool {
 
 func (fD functionDeclaration) Run(iter domain.LineIterator) error {
 	// Handles the if statement
-	r1, _ := regexp.Compile("^fun +(\\S.*)$")
+	r1, _ := regexp.Compile("^fun +([a-zA-Z0-9]* +)?(\\S.*)$")
 	if !r1.MatchString(iter.Current().Tos()) {
 		return fmt.Errorf("invalid function declaration! must have function name, function parameter list, and function executable")
 	}
 
-	err, funcName, funcParamsStr, funcJef := parseFuncStat(r1, iter, fD.jef)
+	err, funcName, funcParamsStr, returnType, funcLines := parseFuncStat(r1, iter, fD.jef)
 	if err != nil {
 		return err
 	}
@@ -41,13 +41,52 @@ func (fD functionDeclaration) Run(iter domain.LineIterator) error {
 
 	// Validates function parameter list
 	strParams := splitFuncParamList(funcParamsStr)
+	var params []domain.Parameter
+	typeParamRegex, _ := regexp.Compile("^([a-zA-Z0-9]*)* +([a-zA-Z][a-zA-Z0-9_]*)")
+	noTypeParamRegex, _ := regexp.Compile("^([a-zA-Z][a-zA-Z0-9_]*)")
+	for _, strParam := range strParams {
+		if strParam != "" {
+			var paramType domain.DataType
+			var paramName lu.String
+			if typeParamRegex.MatchString(strParam.Tos()) {
+				// Parses the param type and param value
+				paramTypeStr := typeParamRegex.FindStringSubmatch(strParam.Tos())[1]
+				paramName = lu.String(typeParamRegex.FindStringSubmatch(strParam.Tos())[2])
 
+				// Parses data type
+				paramType = fD.jef.GetDatatypeManager().GetDatatype(paramTypeStr)
+				if paramType == nil {
+					return fmt.Errorf("invalid function declaration! parameter type does not exist")
+				}
+			} else if noTypeParamRegex.MatchString(strParam.Tos()) {
+				paramName = lu.String(noTypeParamRegex.FindStringSubmatch(strParam.Tos())[1])
+				paramType = fD.jef.GetDatatypeManager().GetDatatype("any")
+			} else {
+				return fmt.Errorf("invalid function declaration! invalid parameter specified")
+			}
+
+			params = append(params, fD.jef.GetFunctionManager().CreateParameter(paramName.Tos(), paramType))
+		}
+	}
+
+	return fD.jef.GetFunctionManager().RegisterFunction(funcName.Tos(), fD.jef, returnType, params, funcLines)
 }
 
 // parseFuncStat function to hold the steps used to parse an individual condition statement for functions
-func parseFuncStat(r1 *regexp.Regexp, iter domain.LineIterator, curJef domain.Jef) (error, lu.String, lu.String, domain.Jef) {
-	// Parses first conditional statement
-	funcSubStr := lu.String(r1.FindStringSubmatch(iter.Current().Tos())[1])
+func parseFuncStat(r1 *regexp.Regexp, iter domain.LineIterator, curJef domain.Jef) (error, lu.String, lu.String, domain.DataType, []lu.String) {
+	// Parses the return type
+	var returnType domain.DataType
+	if r1.FindStringSubmatch(iter.Current().Tos())[1] != "" {
+		returnTypeStr := lu.String(r1.FindStringSubmatch(iter.Current().Tos())[1])
+		returnType = curJef.GetDatatypeManager().GetDatatype(util.TrimWhitespaces(returnTypeStr).Tos())
+		if returnType == nil {
+			return fmt.Errorf("invalid function declaration! return type specified does not exist"), "", "", nil, nil
+		}
+	} else {
+		returnType = curJef.GetDatatypeManager().GetDatatype(domain.AnyDataTypeName)
+	}
+
+	funcSubStr := lu.String(r1.FindStringSubmatch(iter.Current().Tos())[2])
 	funcSubStr = util.TrimWhitespaces(funcSubStr)
 	// Checks the first line for the opening '{'
 	first, second := util.SplitStartOfStatement(funcSubStr)
@@ -58,7 +97,7 @@ func parseFuncStat(r1 *regexp.Regexp, iter domain.LineIterator, curJef domain.Je
 	} else {
 		iter.Next()
 		if !iter.Current().HasPrefix("{") {
-			return fmt.Errorf("invalid function declaration! could not find a closing '{'"), "", "", nil
+			return fmt.Errorf("invalid function declaration! could not find a closing '{'"), "", "", nil, nil
 		}
 		splitCondStr := iter.Current().Split("{")
 		iter.EditCurrent(lu.String(strings.Join(splitCondStr[1:splitCondStr.Len()].Tosa(), "{")))
@@ -68,7 +107,7 @@ func parseFuncStat(r1 *regexp.Regexp, iter domain.LineIterator, curJef domain.Je
 	// Parses function name and parameter list
 	r, _ := regexp.Compile("([a-zA-Z][a-zA-Z0-9]*)\\((.*)\\)")
 	if !r.MatchString(funcSubStr.Tos()) {
-		return fmt.Errorf("invalid function declaration! invalid function name or parameter list specified"), "", "", nil
+		return fmt.Errorf("invalid function declaration! invalid function name or parameter list specified"), "", "", nil, nil
 	}
 
 	subs := r.FindStringSubmatch(funcSubStr.Tos())
@@ -79,15 +118,13 @@ func parseFuncStat(r1 *regexp.Regexp, iter domain.LineIterator, curJef domain.Je
 	funcParams = funcParams.TrimPrefix("(").TrimSuffix(")")
 
 	// Parses the lines of the if statement
-	err, ifLines := util.ReadInStatement(iter)
+	err, funcLines := util.ReadInStatement(iter)
 
 	if err != nil {
-		return fmt.Errorf("invalid declaration statement! %s", err), "", "", nil
+		return fmt.Errorf("invalid declaration statement! %s", err), "", "", nil, nil
 	}
 
-	// Creates new jef instance and runs it if the condition is true
-	jef := curJef.New(ifLines)
-	return nil, funcName, funcParams, jef
+	return nil, funcName, funcParams, returnType, funcLines
 }
 
 // splitFuncParamList splits the function parameter list into sub strings
